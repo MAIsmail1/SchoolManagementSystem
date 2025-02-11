@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '../contexts/NavigationContext';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const { login, loading } = useAuth();
-  const { navigate } = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login(formData.email, formData.password);
-      navigate('home');
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
+    setLoading(true);
+    // Add login logic here
+    setTimeout(() => setLoading(false), 1000);
   };
 
   return (
-    <div className="p-6 max-w-sm mx-auto">
-      <Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-50 to-white py-12 px-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle className="text-center">Welcome Back</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
