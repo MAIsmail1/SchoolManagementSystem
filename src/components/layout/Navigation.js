@@ -25,7 +25,7 @@ const Navigation = () => {
               className="ml-2 text-xl font-bold text-gray-800 cursor-pointer"
               onClick={() => handlePageChange('/', 'home')}
             >
-              School Management
+              Taleem
             </Link>
           </div>
           <div className="flex items-center space-x-4">

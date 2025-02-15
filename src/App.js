@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from './components/common/card';
 import { Button } from './components/common/button';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, MousePointerClick, Shield, HeadphonesIcon, RefreshCw} from 'lucide-react';
 import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './components/layout/Navigation';
+import ContactForm from './components/layout/ContactForm.js';
 
 // AppContent component to handle route changes and state
 const AppContent = () => {
@@ -56,67 +57,171 @@ const AppContent = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Landing Page Component
-  const LandingPage = () => (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="px-6 py-16 bg-gradient-to-r from-purple-100 to-blue-100">
-        <div className="max-w-6xl mx-auto text-center">
-          <GraduationCap className="w-16 h-16 mx-auto mb-6 text-purple-600" />
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Welcome to School Management System
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Empowering education through seamless management and communication
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button onClick={() => setCurrentPage('signup')}>Get Started</Button>
-            <Button variant="outline">Learn More</Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
-            Our Features
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Student Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Efficiently manage enrollments and track student progress.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Teacher Portal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Easy access to class schedules and student information.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Parent Access</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Monitor your child's progress and communicate with teachers.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+  // Landing Page Component in App.js
+const LandingPage = () => (
+  <div className="min-h-screen">
+    {/* Hero Section */}
+    <div className="px-6 py-16 bg-gradient-to-r from-purple-100 to-blue-100">
+      <div className="max-w-6xl mx-auto text-center">
+        <GraduationCap className="w-16 h-16 mx-auto mb-6 text-purple-600" />
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          Welcome to Taleem
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          Empowering education through seamless management and communication
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Button onClick={() => setCurrentPage('signup')}>Get Started</Button>
+          <Button variant="outline">Learn More</Button>
         </div>
       </div>
     </div>
-  );
 
+    {/* Features Section */}
+    <div className="py-16 px-6 bg-white">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+          Our Features
+        </h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle>Student Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Efficiently manage enrollments and track student progress. Keep detailed records
+                and monitor academic performance.
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle>Teacher Portal</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Easy access to class schedules, student information, and grading tools.
+                Streamline your teaching workflow.
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle>Parent Access</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Monitor your child's progress and communicate with teachers.
+                Stay involved in your child's education.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+
+    {/* Benefits Section */}
+<div className="py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
+  <div className="max-w-6xl mx-auto">
+    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+      Why Choose Us
+    </h2>
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="text-center p-6">
+        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <MousePointerClick className="w-6 h-6 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">Easy to Use</h3>
+        <p className="text-gray-600">Intuitive interface for all users</p>
+      </div>
+      <div className="text-center p-6">
+        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Shield className="w-6 h-6 text-blue-600" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">Secure</h3>
+        <p className="text-gray-600">Data protection is our priority</p>
+      </div>
+      <div className="text-center p-6">
+        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <HeadphonesIcon className="w-6 h-6 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
+        <p className="text-gray-600">Always here to help you</p>
+      </div>
+      <div className="text-center p-6">
+        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <RefreshCw className="w-6 h-6 text-blue-600" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">Regular Updates</h3>
+        <p className="text-gray-600">Continuous improvements</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+    {/* Contact Form Section */}
+<div className="py-16 px-6 bg-gradient-to-r from-purple-50 to-blue-50">
+  {/* Contact Form Section */}
+  <div className="max-w-6xl mx-auto">
+    <div className="text-center mb-12">
+      <h2 className="text-3xl font-bold text-gray-800 mb-4">Get in Touch</h2>
+      <p className="text-gray-600 max-w-2xl mx-auto">
+        Have questions about our school management system? We'd love to hear from you.
+      </p>
+    </div>
+    <div className="max-w-2xl mx-auto">
+      <ContactForm />
+    </div>
+  </div>
+</div>
+
+    {/* Footer */}
+    <footer className="bg-gray-800 text-white py-12">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Taleem</h3>
+            <p className="text-gray-400">
+              Empowering education through technology and innovation.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Contact Info</h3>
+            <ul className="space-y-2 text-gray-400">
+              <li>Email: info@schoolmanagement.com</li>
+              <li>Phone: 07979411995</li>
+              <li>Address: 123 Education St, Learning City</li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; 2024 Taleem System. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+);
   // Login Page Component
   const LoginPage = () => {
     const [error, setError] = useState('');
