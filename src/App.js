@@ -1,55 +1,44 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
-import { Button } from './components/ui/button';
+// src/App.js
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from './components/common/card';
+import { Button } from './components/common/button';
 import { GraduationCap } from 'lucide-react';
+import { AuthProvider } from './contexts/AuthContext';
+import Navigation from './components/layout/Navigation';
 
-const App = () => {
-  // State Management
+// AppContent component to handle route changes and state
+const AppContent = () => {
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // Signup Form State
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [signupForm, setSignupForm] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-
-  // Login Form State
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: ''
-  });
-
-  // Errors State
   const [errors, setErrors] = useState({});
+
+  // Sync URL with state
+  useEffect(() => {
+    const pathToPage = {
+      '/': 'home',
+      '/login': 'login',
+      '/signup': 'signup',
+      '/admin-dashboard': 'admin-dashboard'
+    };
+    setCurrentPage(pathToPage[location.pathname] || 'home');
+  }, [location]);
 
   // Admin Credentials
   const adminCredentials = {
     email: 'admin@school.com',
     password: 'admin123',
     role: 'admin'
-  };
-
-  // Test Credentials
-  const testCredentials = {
-    admin: {
-      email: 'admin@school.com',
-      password: 'admin123',
-      role: 'admin'
-    },
-    teacher: {
-      email: 'teacher@school.com',
-      password: 'teacher123',
-      role: 'teacher'
-    },
-    parent: {
-      email: 'parent@school.com',
-      password: 'parent123',
-      role: 'parent'
-    }
   };
 
   // Form Validation Function
@@ -86,7 +75,6 @@ const App = () => {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
@@ -131,21 +119,14 @@ const App = () => {
 
   // Login Page Component
   const LoginPage = () => {
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setLoginForm(prevForm => ({
-        ...prevForm,
-        [name]: value
-      }));
-    };
+    const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
+    const handleSubmit = (e) => {
       e.preventDefault();
       setLoading(true);
 
-      // Check admin credentials
-      if (loginForm.email === adminCredentials.email &&
-          loginForm.password === adminCredentials.password) {
+      if (email === adminCredentials.email && 
+          password === adminCredentials.password) {
         setTimeout(() => {
           setUser({ ...adminCredentials });
           setCurrentPage('admin-dashboard');
@@ -153,7 +134,7 @@ const App = () => {
         }, 1000);
       } else {
         setLoading(false);
-        alert('Invalid credentials');
+        setError('Invalid credentials. Only admin can access the system.');
       }
     };
 
@@ -161,55 +142,69 @@ const App = () => {
       <div className="flex justify-center items-center min-h-[85vh] px-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">Welcome Back</CardTitle>
+            <CardTitle className="text-center">Admin Login</CardTitle>
             <p className="text-gray-600 text-center">
-              Enter your credentials to access your account
+              Only administrators can access the system
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-4">
+                {error && (
+                  <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md">
+                    {error}
+                  </div>
+                )}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label 
+                    htmlFor="admin-email" 
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Email
+                  </label>
                   <input
+                    id="admin-email"
                     type="email"
-                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Enter your email"
-                    value={loginForm.email}
-                    onChange={handleInputChange}
+                    placeholder="Enter admin email"
+                    autoComplete="email"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Password</label>
+                  <label 
+                    htmlFor="admin-password" 
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Password
+                  </label>
                   <input
+                    id="admin-password"
                     type="password"
-                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Enter your password"
-                    value={loginForm.password}
-                    onChange={handleInputChange}
+                    placeholder="Enter admin password"
+                    autoComplete="current-password"
+                    required
                   />
                 </div>
                 <div className="text-sm text-gray-500">
-                  Demo Admin Login:
+                  <div>Demo Admin Credentials:</div>
                   <div>Email: admin@school.com</div>
                   <div>Password: admin123</div>
                 </div>
-                <Button type="submit" className="w-full py-3" disabled={loading}>
-                  {loading ? 'Loading...' : 'Login'}
+                <Button 
+                  type="submit" 
+                  className="w-full py-3" 
+                  disabled={loading}
+                >
+                  {loading ? 'Logging in...' : 'Login'}
                 </Button>
               </div>
             </form>
-            <div className="text-center">
-              <p className="text-gray-600">Don't have an account?</p>
-              <button
-                onClick={() => setCurrentPage('signup')}
-                className="text-purple-600 hover:text-purple-700 font-medium mt-1"
-              >
-                Create an account
-              </button>
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -220,8 +215,8 @@ const App = () => {
   const SignUpPage = () => {
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setSignupForm(prevForm => ({
-        ...prevForm,
+      setSignupForm(prev => ({
+        ...prev,
         [name]: value
       }));
     };
@@ -246,8 +241,9 @@ const App = () => {
             <form onSubmit={handleSignup}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Full Name</label>
+                  <label htmlFor="signup-name" className="block text-sm font-medium mb-2">Full Name</label>
                   <input
+                    id="signup-name"
                     type="text"
                     name="name"
                     className={`w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 
@@ -255,13 +251,15 @@ const App = () => {
                     placeholder="Enter your name"
                     value={signupForm.name}
                     onChange={handleInputChange}
+                    autoComplete="name"
                   />
                   {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label htmlFor="signup-email" className="block text-sm font-medium mb-2">Email</label>
                   <input
+                    id="signup-email"
                     type="email"
                     name="email"
                     className={`w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -269,13 +267,15 @@ const App = () => {
                     placeholder="Enter your email"
                     value={signupForm.email}
                     onChange={handleInputChange}
+                    autoComplete="email"
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Password</label>
+                  <label htmlFor="signup-password" className="block text-sm font-medium mb-2">Password</label>
                   <input
+                    id="signup-password"
                     type="password"
                     name="password"
                     className={`w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -283,13 +283,15 @@ const App = () => {
                     placeholder="Create a password"
                     value={signupForm.password}
                     onChange={handleInputChange}
+                    autoComplete="new-password"
                   />
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Confirm Password</label>
+                  <label htmlFor="signup-confirm-password" className="block text-sm font-medium mb-2">Confirm Password</label>
                   <input
+                    id="signup-confirm-password"
                     type="password"
                     name="confirmPassword"
                     className={`w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -297,6 +299,7 @@ const App = () => {
                     placeholder="Confirm your password"
                     value={signupForm.confirmPassword}
                     onChange={handleInputChange}
+                    autoComplete="new-password"
                   />
                   {errors.confirmPassword && (
                     <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
@@ -323,68 +326,39 @@ const App = () => {
     );
   };
 
-  // Placeholder Dashboard Components
-  const AdminDashboard = () => <div>Admin Dashboard</div>;
-  const TeacherDashboard = () => <div>Teacher Dashboard</div>;
-  const ParentDashboard = () => <div>Parent Dashboard</div>;
+  // Admin Dashboard Component
+  const AdminDashboard = () => (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <p>Welcome, {user?.email}</p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Navigation */}
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <GraduationCap className="h-8 w-8 text-purple-600" />
-              <span 
-                className="ml-2 text-xl font-bold text-gray-800 cursor-pointer"
-                onClick={() => setCurrentPage('home')}
-              >
-                School Management
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              {!user ? (
-                <>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setCurrentPage('login')}
-                  >
-                    Login
-                  </Button>
-                  <Button 
-                    onClick={() => setCurrentPage('signup')}
-                  >
-                    Sign Up
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <span className="text-sm text-gray-700">{user.email}</span>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setUser(null);
-                      setCurrentPage('home');
-                    }}
-                  >
-                    Logout
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
+      <Navigation />
       <main>
-        {currentPage === 'home' && <LandingPage />}
-        {currentPage === 'login' && <LoginPage />}
-        {currentPage === 'signup' && <SignUpPage />}
-        {currentPage === 'admin-dashboard' && user?.role === 'admin' && <AdminDashboard />}
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route 
+            path="/admin-dashboard" 
+            element={user?.role === 'admin' ? <AdminDashboard /> : <LoginPage />} 
+          />
+        </Routes>
       </main>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 };
 

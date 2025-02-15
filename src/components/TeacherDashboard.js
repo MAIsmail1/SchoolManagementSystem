@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/common/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from 'components/ui/input';
+import { Input } from 'components/common/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, ClipboardList } from 'lucide-react';
 
