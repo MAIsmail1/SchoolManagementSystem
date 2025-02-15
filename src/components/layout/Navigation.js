@@ -15,47 +15,42 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <GraduationCap className="h-8 w-8 text-purple-600" />
+            <GraduationCap className="h-8 w-8 text-purple-400" />
             <Link 
               to="/" 
-              className="ml-2 text-xl font-bold text-gray-800 cursor-pointer"
+              className="ml-2 text-xl font-bold text-white hover:text-purple-400 transition-colors"
               onClick={() => handlePageChange('/', 'home')}
             >
-              Taleem
+              Ta'leem
             </Link>
           </div>
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-sm text-gray-700">{user.email}</span>
+                <span className="text-sm text-gray-300">{user.email}</span>
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     logout();
                     handlePageChange('/', 'home');
                   }}
+                  className="text-white border-white hover:bg-white hover:text-gray-800"
                 >
                   Logout
                 </Button>
               </>
             ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  onClick={() => handlePageChange('/login', 'login')}
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => handlePageChange('/signup', 'signup')}
-                >
-                  Sign Up
-                </Button>
-              </>
+              <Button 
+                variant="outline" 
+                onClick={() => handlePageChange('/login', 'login')}
+                className="text-white border-white hover:bg-white hover:text-gray-800"
+              >
+                Login
+              </Button>
             )}
           </div>
         </div>
