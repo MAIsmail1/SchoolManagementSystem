@@ -1,8 +1,8 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/common/card.js';
+import { Button } from '../components/common/button.js';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
