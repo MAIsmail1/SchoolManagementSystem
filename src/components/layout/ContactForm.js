@@ -1,4 +1,3 @@
-// src/components/layout/ContactForm.js
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../common/card';
 import { Button } from '../common/button';
@@ -26,7 +25,6 @@ const ContactForm = () => {
     e.preventDefault();
     setStatus('sending');
 
-    // Simulate form submission
     setTimeout(() => {
       setStatus('success');
       setFormData({
@@ -36,131 +34,132 @@ const ContactForm = () => {
         message: ''
       });
       
-      // Reset success message after 3 seconds
       setTimeout(() => setStatus(''), 3000);
     }, 1000);
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">Get in Touch</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Have questions about Taleem? We'd love to hear from you and help you get started.
-        </p>
-      </div>
-      
-      <div className="max-w-2xl mx-auto">
-        <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl text-purple-600">Send us a Message</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+    <div className="w-full min-h-screen bg-gradient-to-r from-green-950 to-black py-16">
+      <div className="px-6 max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-white mb-4">Get in Touch</h2>
+          <p className="text-gray-300 max-w-2xl mx-auto">
+            Have questions about Taleem? We'd love to hear from you and help you get started.
+          </p>
+        </div>
+        
+        <div className="max-w-2xl mx-auto">
+          <Card className="bg-white/95 backdrop-blur-sm shadow-xl border border-green-800/20">
+            <CardHeader className="text-center pb-6 border-b border-green-100">
+              <CardTitle className="text-2xl text-green-800">Send us a Message</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label 
+                      htmlFor="contact-name" 
+                      className="block text-sm font-medium mb-2 text-gray-700"
+                    >
+                      Name
+                    </label>
+                    <input
+                      id="contact-name"
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all"
+                      placeholder="Your name"
+                      autoComplete="name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label 
+                      htmlFor="contact-email" 
+                      className="block text-sm font-medium mb-2 text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all"
+                      placeholder="Your email"
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label 
-                    htmlFor="contact-name" 
+                    htmlFor="contact-subject" 
                     className="block text-sm font-medium mb-2 text-gray-700"
                   >
-                    Name
+                    Subject
                   </label>
                   <input
-                    id="contact-name"
+                    id="contact-subject"
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="subject"
+                    value={formData.subject}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="Your name"
-                    autoComplete="name"
+                    className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all"
+                    placeholder="What's this about?"
+                    autoComplete="off"
                     required
                   />
                 </div>
 
                 <div>
                   <label 
-                    htmlFor="contact-email" 
+                    htmlFor="contact-message" 
                     className="block text-sm font-medium mb-2 text-gray-700"
                   >
-                    Email
+                    Message
                   </label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    value={formData.message}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="Your email"
-                    autoComplete="email"
+                    className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all min-h-[150px] resize-y"
+                    placeholder="Your message"
+                    autoComplete="off"
                     required
                   />
                 </div>
-              </div>
 
-              <div>
-                <label 
-                  htmlFor="contact-subject" 
-                  className="block text-sm font-medium mb-2 text-gray-700"
-                >
-                  Subject
-                </label>
-                <input
-                  id="contact-subject"
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  placeholder="What's this about?"
-                  autoComplete="off"
-                  required
-                />
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="contact-message" 
-                  className="block text-sm font-medium mb-2 text-gray-700"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all min-h-[150px] resize-y"
-                  placeholder="Your message"
-                  autoComplete="off"
-                  required
-                />
-              </div>
-
-              {status === 'success' && (
-                <div className="p-4 text-sm text-green-600 bg-green-50 rounded-md border border-green-200">
-                  Thank you for your message! We'll get back to you soon.
-                </div>
-              )}
-
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 rounded-md transition-all flex items-center justify-center gap-2"
-                disabled={status === 'sending'}
-              >
-                {status === 'sending' ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    Send Message
-                    <SendHorizontal className="w-4 h-4" />
-                  </>
+                {status === 'success' && (
+                  <div className="p-4 text-sm text-green-700 bg-green-50 rounded-md border border-green-200">
+                    Thank you for your message! We'll get back to you soon.
+                  </div>
                 )}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+
+                <Button 
+                  type="submit" 
+                  className="w-full bg-green-700 hover:bg-green-800 text-white font-medium py-3 rounded-md transition-all flex items-center justify-center gap-2"
+                  disabled={status === 'sending'}
+                >
+                  {status === 'sending' ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      Send Message
+                      <SendHorizontal className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

@@ -15,14 +15,14 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white">
+    <nav className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <GraduationCap className="h-8 w-8 text-purple-400" />
+            <GraduationCap className="h-8 w-8 text-green-700" />
             <Link 
               to="/" 
-              className="ml-2 text-xl font-bold text-white hover:text-purple-400 transition-colors"
+              className="ml-2 text-xl font-bold text-white hover:text-green-600 transition-colors"
               onClick={() => handlePageChange('/', 'home')}
             >
               Ta'leem
@@ -38,7 +38,7 @@ const Navigation = () => {
                     logout();
                     handlePageChange('/', 'home');
                   }}
-                  className="text-white border-white hover:bg-white hover:text-gray-800"
+                  className="text-white border-white hover:bg-green-800 hover:border-green-800 hover:text-white"
                 >
                   Logout
                 </Button>
@@ -47,7 +47,7 @@ const Navigation = () => {
               <Button 
                 variant="outline" 
                 onClick={() => handlePageChange('/login', 'login')}
-                className="text-white border-white hover:bg-white hover:text-gray-800"
+                className="text-white border-white hover:bg-green-800 hover:border-green-800 hover:text-white"
               >
                 Login
               </Button>

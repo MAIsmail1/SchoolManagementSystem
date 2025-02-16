@@ -38,40 +38,50 @@ const AppContent = () => {
   const LandingPage = () => (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="px-6 py-16 bg-gradient-to-r from-purple-100 to-blue-100">
-        <div className="max-w-6xl mx-auto text-center">
-          <GraduationCap className="w-16 h-16 mx-auto mb-6 text-purple-600" />
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Welcome to Ta'leem
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Empowering education through seamless management and communication
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button onClick={() => setCurrentPage('login')}>Get Started</Button>
-            <Button variant="outline">Learn More</Button>
-          </div>
-        </div>
-      </div>
+<div className="px-6 py-16 bg-gradient-to-r from-green-950 to-black">
+  <div className="max-w-6xl mx-auto text-center">
+    <GraduationCap className="w-16 h-16 mx-auto mb-6 text-green-500" />
+    <h1 className="text-4xl font-bold text-white mb-4">
+      Welcome to Ta'leem
+    </h1>
+    <p className="text-xl text-gray-300 mb-8">
+      Empowering education through seamless management and communication
+    </p>
+    <div className="flex gap-4 justify-center">
+      <Button 
+        onClick={() => setCurrentPage('login')}
+        className="bg-green-700 hover:bg-green-800 text-white"
+      >
+        Get Started
+      </Button>
+      <Button 
+        variant="outline"
+        className="border-green-500 text-green-500 hover:bg-green-800 hover:text-white hover:border-green-800"
+      >
+        Learn More
+      </Button>
+    </div>
+  </div>
+</div>
 
       {/* Features Section */}
 <div className="py-16 px-6 bg-white">
   <div className="max-w-6xl mx-auto">
-    <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+    <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
       Our Features
     </h2>
     <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
       Comprehensive tools designed to enhance the educational experience for everyone
     </p>
     <div className="grid md:grid-cols-3 gap-8">
-      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-purple-200 overflow-hidden group">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-green-700 overflow-hidden group">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-800 to-green-950 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-purple-50 rounded-lg">
-              <GraduationCap className="w-5 h-5 text-purple-600" />
+            <div className="p-2 bg-green-50 rounded-lg">
+              <GraduationCap className="w-5 h-5 text-green-700" />
             </div>
-            <CardTitle className="text-xl font-semibold text-gray-800 group-hover:text-purple-600 transition-colors">Student Management</CardTitle>
+            <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-green-700 transition-colors">Student Management</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -82,14 +92,14 @@ const AppContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-purple-200 overflow-hidden group">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-green-700 overflow-hidden group">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-800 to-green-950 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <GraduationCap className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-green-50 rounded-lg">
+              <GraduationCap className="w-5 h-5 text-green-700" />
             </div>
-            <CardTitle className="text-xl font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">Teacher Portal</CardTitle>
+            <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-green-700 transition-colors">Teacher Portal</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -100,14 +110,14 @@ const AppContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-purple-200 overflow-hidden group">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 hover:border-green-700 overflow-hidden group">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-800 to-green-950 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-purple-50 rounded-lg">
-              <GraduationCap className="w-5 h-5 text-purple-600" />
+            <div className="p-2 bg-green-50 rounded-lg">
+              <GraduationCap className="w-5 h-5 text-green-700" />
             </div>
-            <CardTitle className="text-xl font-semibold text-gray-800 group-hover:text-purple-600 transition-colors">Parent Access</CardTitle>
+            <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-green-700 transition-colors">Parent Access</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -120,42 +130,42 @@ const AppContent = () => {
     </div>
   </div>
 </div>
-    {/* Benefits Section */}
+   {/* Benefits Section */}
 <div className="py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
   <div className="max-w-6xl mx-auto">
-    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+    <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
       Why Choose Us
     </h2>
     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group">
-        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors duration-300 group-hover:rotate-12 transform">
-          <MousePointerClick className="w-6 h-6 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
+      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-green-100">
+        <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors duration-300 group-hover:rotate-12 transform">
+          <MousePointerClick className="w-6 h-6 text-green-700 group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-purple-600 transition-colors duration-300">Easy to Use</h3>
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-700 transition-colors duration-300">Easy to Use</h3>
         <p className="text-gray-600">Intuitive interface for all users</p>
       </div>
       
-      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group">
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors duration-300 group-hover:rotate-12 transform">
-          <Shield className="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-green-100">
+        <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors duration-300 group-hover:rotate-12 transform">
+          <Shield className="w-6 h-6 text-green-700 group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-blue-600 transition-colors duration-300">Secure</h3>
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-700 transition-colors duration-300">Secure</h3>
         <p className="text-gray-600">Data protection is our priority</p>
       </div>
       
-      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group">
-        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors duration-300 group-hover:rotate-12 transform">
-          <HeadphonesIcon className="w-6 h-6 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
+      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-green-100">
+        <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors duration-300 group-hover:rotate-12 transform">
+          <HeadphonesIcon className="w-6 h-6 text-green-700 group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-purple-600 transition-colors duration-300">24/7 Support</h3>
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-700 transition-colors duration-300">24/7 Support</h3>
         <p className="text-gray-600">Always here to help you</p>
       </div>
       
-      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group">
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors duration-300 group-hover:rotate-12 transform">
-          <RefreshCw className="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+      <div className="text-center p-6 bg-white rounded-lg hover:scale-105 transform-gpu transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-green-100">
+        <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors duration-300 group-hover:rotate-12 transform">
+          <RefreshCw className="w-6 h-6 text-green-700 group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-blue-600 transition-colors duration-300">Regular Updates</h3>
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-700 transition-colors duration-300">Regular Updates</h3>
         <p className="text-gray-600">Continuous improvements</p>
       </div>
     </div>
@@ -167,49 +177,50 @@ const AppContent = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Taleem</h3>
-              <p className="text-gray-400">
-                Empowering education through technology and innovation.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Contact Info</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Email: info@taleem.com</li>
-                <li>Phone: 07979411995</li>
-                <li>Address: 123 Education St, Learning City</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Taleem. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+<footer className="bg-black text-white py-12">
+  <div className="max-w-6xl mx-auto px-6">
+    <div className="grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 className="text-xl font-semibold mb-4 text-green-600">Taleem</h3>
+        <p className="text-gray-300">
+          Empowering education through technology and innovation.
+        </p>
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
+        <ul className="space-y-2">
+          <li>
+            <a href="#" className="text-gray-300 hover:text-green-600 transition-colors">
+              About Us
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-gray-300 hover:text-green-600 transition-colors">
+              Features
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-gray-300 hover:text-green-600 transition-colors">
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold mb-4">Contact Info</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>Email: info@taleem.com</li>
+          <li>Phone: 07979411995</li>
+          <li>Address: 123 Education St, Learning City</li>
+        </ul>
+      </div>
+    </div>
+    <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-300">
+      <p>&copy; 2024 Taleem. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
     </div>
   );
 
