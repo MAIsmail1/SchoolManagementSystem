@@ -5,7 +5,12 @@ import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './components/layout/Navigation';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-
+import AboutPage from './pages/AboutUs.js';
+import ServicesPage from './pages/Services.js';
+import PackagesPage from './pages/Packages.js';
+import PackageContactPage from './pages/PackageContactPage.js';
+import ContactPage from './pages/ContactPage';
+import './styles/animations.css';
 // Importing Lucide icons for use across components
 import { 
   GraduationCap, 
@@ -51,14 +56,20 @@ const AppContent = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <Navigation />
       <main>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route 
-            path="/admin-dashboard" 
-            element={user?.role === 'admin' ? <AdminDashboard /> : <LoginPage />} 
-          />
-        </Routes>
+{/* In your Routes component */}
+<Routes>
+  <Route path="/" element={<HomePage />} />
+  <Route path="/about" element={<AboutPage />} />
+  <Route path="/services" element={<ServicesPage />} />
+  <Route path="/packages" element={<PackagesPage />} />
+  <Route path="/contact" element={<ContactPage />} />
+  <Route path="/package-contact/:packageId" element={<PackageContactPage />} />
+  <Route path="/login" element={<LoginPage />} />
+  <Route 
+    path="/admin-dashboard" 
+    element={user?.role === 'admin' ? <AdminDashboard /> : <LoginPage />} 
+  />
+</Routes>
       </main>
     </div>
   );

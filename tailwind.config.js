@@ -19,6 +19,13 @@ module.exports = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        green: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          700: '#15803d',
+          800: '#166534',
+          950: '#052e16'
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
