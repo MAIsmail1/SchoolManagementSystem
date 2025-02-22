@@ -1,4 +1,3 @@
-// src/components/layout/Navigation.js
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
@@ -10,6 +9,15 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLogoClick = (event) => {
+    if (location.pathname === '/') {
+      event.preventDefault();
+      window.location.reload();
+    } else {
+      navigate('/');
+    }
+  };
 
   const handlePageChange = (path) => {
     navigate(path);
@@ -34,6 +42,7 @@ const Navigation = () => {
             <GraduationCap className="h-8 w-8 text-green-700 ml-3" />
             <Link 
               to="/" 
+              onClick={handleLogoClick}
               className="ml-2 text-xl font-bold text-white hover:text-green-600 transition-colors"
             >
               Ta'leem
@@ -74,6 +83,17 @@ const Navigation = () => {
       {/* Burger Menu Sidebar */}
       <div className={`fixed top-16 left-0 h-full w-64 bg-black transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} z-50`}>
         <div className="p-4 space-y-4">
+          <Link 
+            to="/" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`block py-2 transition-colors ${
+              isActivePage('/')
+                ? 'text-green-500'
+                : 'text-white hover:text-green-500'
+            }`}
+          >
+            Home
+          </Link>
           <Link 
             to="/about"
             onClick={() => setIsMenuOpen(false)}

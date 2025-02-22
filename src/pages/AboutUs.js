@@ -1,5 +1,5 @@
 // src/pages/AboutPage.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, Target, Award, Building2, BookOpen, GraduationCap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/common/card';
@@ -7,6 +7,13 @@ import { Button } from '../components/common/button';
 
 const AboutPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
   
   // const stats = [
   //   { label: 'Schools Using Taleem', value: '500+' },

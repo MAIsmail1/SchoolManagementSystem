@@ -1,50 +1,63 @@
-// src/contexts/AuthContext.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
-  // Admin Credentials - Only allow admin login initially
-  const adminCredentials = {
-    email: 'admin@school.com',
-    password: 'admin123',
-    role: 'admin'
-  };
-
-  const login = async (email, password) => {
-    setLoading(true);
-    try {
-      // Only check admin credentials
-      if (email === adminCredentials.email && password === adminCredentials.password) {
-        const userData = { ...adminCredentials };
-        setUser(userData);
-        return userData;
-      } else {
-        throw new Error('Invalid admin credentials');
-      }
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
+  const login = async (email, password, role = 'admin') => {
+    console.log('Login attempt:', { email, password, role });
+    if (role === 'admin' && email === 'admin@taleem.com' && password === 'admin123') {
+      const adminUser = { email, role: 'admin', name: 'Admin User' };
+      setUser(adminUser);
+      localStorage.setItem('user', JSON.stringify(adminUser));
+      console.log('Authentication result:', adminUser);
+      return adminUser;
+    } else if (role === 'teacher' && email === 'teacher@demo.com' && password === 'teacher123') {
+      const teacherUser = { 
+        email, 
+        role: 'teacher', 
+        name: 'Demo Teacher',
+        subject: 'Mathematics'
+      };
+      setUser(teacherUser);
+      localStorage.setItem('user', JSON.stringify(teacherUser));
+      console.log('Authentication result:', teacherUser);
+      return teacherUser;
     }
+    console.log('Authentication failed');
+    throw new Error('Invalid credentials');
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('user');
   };
 
-  const value = {
-    user,
-    loading,
-    login,
-    logout
+  const isAuthenticated = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      return parsedUser && (parsedUser.role === 'admin' || parsedUser.role === 'teacher');
+    }
+    return false;
+  };
+
+  const getCurrentUser = () => {
+    return user;
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout,
+      isAuthenticated,
+      getCurrentUser
+    }}>
       {children}
     </AuthContext.Provider>
   );
