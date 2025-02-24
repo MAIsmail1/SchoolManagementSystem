@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowLeft, Save, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
 import { Button } from '../common/button';
 import { useAuth } from '../../contexts/AuthContext';
+import { useStudents } from '../../contexts/StudentContext';
 
 const AddStudentPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('enrolled');
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { addStudent } = useStudents();
+
   const [studentData, setStudentData] = useState({
     name: '',
     dob: '',
@@ -52,11 +55,12 @@ const AddStudentPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement actual student addition logic (e.g., API call)
-    console.log('Student Data Submitted:', studentData);
     
-    // Temporary alert to show data
-    alert(JSON.stringify(studentData, null, 2));
+    // Add the student using our context function
+    const newStudentId = addStudent(studentData);
+    
+    // Show success message
+    alert(`Student ${studentData.name} has been added successfully!`);
     
     // Navigate back to enrolled students in admin dashboard
     navigate('/admin-dashboard');
@@ -85,7 +89,7 @@ const AddStudentPage = () => {
                 className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
               >
                 <ArrowLeft className="h-5 w-5" />
-                <span className="text-xl font-semibold">Add Student</span>
+                <span className="text-xl font-semibold">Back</span>
               </button>
             </div>
             <button

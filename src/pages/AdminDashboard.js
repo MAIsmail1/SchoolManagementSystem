@@ -1,49 +1,62 @@
-import React, { useState } from 'react';
-import { Menu, X, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import EnrolledStudents from '../components/admindashboard/EnrolledStudents';
-import WaitingListStudents from '../components/admindashboard/WaitingListStudents';
-import TeacherProfiles from '../components/admindashboard/TeacherProfiles';
-import Classes from '../components/admindashboard/Classes';
-import Attendance from '../components/admindashboard/AdminAttendance';
-import StudentProgress from '../components/admindashboard/StudentProgress';
-import Payment from '../components/admindashboard/Payment';
+import { Menu, X, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
+import EnrolledStudents from '../components/adminDashboard/EnrolledStudents';
+import WaitingListStudents from '../components/adminDashboard/WaitingListStudents';
+import TeacherProfiles from '../components/adminDashboard/TeacherProfiles';
+import Classes from '../components/adminDashboard/Classes';
+import Attendance from '../components/adminDashboard/AdminAttendance';
+import StudentProgress from '../components/adminDashboard/StudentProgress';
+import Payment from '../components/adminDashboard/Payment';
 
 const AdminDashboard = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('enrolled');
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout } = useAuth();
 
+  // Menu items with their corresponding paths
   const menuItems = [
-    { id: 'enrolled', name: 'Enrolled Students', icon: <Users className="w-5 h-5" /> },
-    { id: 'waiting', name: 'Waiting List', icon: <UserCheck className="w-5 h-5" /> },
-    { id: 'teachers', name: 'Teacher Profiles', icon: <UserPlus className="w-5 h-5" /> },
-    { id: 'classes', name: 'Classes', icon: <BookOpen className="w-5 h-5" /> },
-    { id: 'attendance', name: 'Attendance', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'progress', name: 'Student Progress', icon: <TrendingUp className="w-5 h-5" /> },
-    { id: 'payment', name: 'Payment', icon: <Wallet className="w-5 h-5" /> }
+    { id: 'enrolled', name: 'Enrolled Students', icon: <Users className="w-5 h-5" />, path: '/admin-dashboard' },
+    { id: 'waiting', name: 'Waiting List', icon: <UserCheck className="w-5 h-5" />, path: '/admin-dashboard/waiting' },
+    { id: 'teachers', name: 'Teacher Profiles', icon: <UserPlus className="w-5 h-5" />, path: '/admin-dashboard/teachers' },
+    { id: 'classes', name: 'Classes', icon: <BookOpen className="w-5 h-5" />, path: '/admin-dashboard/classes' },
+    { id: 'attendance', name: 'Attendance', icon: <Calendar className="w-5 h-5" />, path: '/admin-dashboard/attendance' },
+    { id: 'progress', name: 'Student Progress', icon: <TrendingUp className="w-5 h-5" />, path: '/admin-dashboard/progress' },
+    { id: 'payment', name: 'Payment', icon: <Wallet className="w-5 h-5" />, path: '/admin-dashboard/payment' }
   ];
+
+  // Set the active tab based on the current URL path
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const matchedItem = menuItems.find(item => item.path === currentPath);
+    if (matchedItem) {
+      setActiveTab(matchedItem.id);
+    } else if (currentPath === '/admin-dashboard') {
+      setActiveTab('enrolled');
+    }
+  }, [location.pathname]);
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'enrolled':
-        return <EnrolledStudents />;
-      case 'waiting':
-        return <WaitingListStudents />;
-      case 'teachers':
-        return <TeacherProfiles />;
-      case 'classes':
-        return <Classes />;
-      case 'attendance':
-        return <Attendance />;
-      case 'progress':
-        return <StudentProgress />;
-      case 'payment':
-        return <Payment />;
-      default:
-        return <EnrolledStudents />;
+      case 'enrolled': return <EnrolledStudents />;
+      case 'waiting': return <WaitingListStudents />;
+      case 'teachers': return <TeacherProfiles />;
+      case 'classes': return <Classes />;
+      case 'attendance': return <Attendance />;
+      case 'progress': return <StudentProgress />;
+      case 'payment': return <Payment />;
+      default: return <EnrolledStudents />;
+    }
+  };
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    const selectedItem = menuItems.find(item => item.id === tabId);
+    if (selectedItem) {
+      navigate(selectedItem.path);
     }
   };
 
@@ -53,79 +66,52 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Simplified Top Navigation */}
-      <nav className="bg-black text-white shadow-md fixed top-0 left-0 right-0 z-40">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-md hover:bg-green-800 transition-colors"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-              <span className="ml-4 text-xl font-semibold">Admin Dashboard</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 p-2 rounded-md hover:bg-green-800 transition-colors"
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-black transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-center h-16 bg-black">
+          <span className="text-white text-xl font-semibold">Admin Dashboard</span>
+        </div>
+        <nav className="mt-5">
+          {menuItems.map((item) => (
+            <a
+              key={item.id}
+              className={`flex items-center mt-4 py-2 px-6 text-gray-300 hover:bg-green-800 hover:bg-opacity-25 hover:text-gray-100 ${
+                activeTab === item.id ? 'bg-green-800 bg-opacity-25 text-gray-100' : ''
+              } transition-all duration-300 ease-in-out`}
+              onClick={() => handleTabChange(item.id)}
             >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
+              {item.icon}
+              <span className="mx-3">{item.name}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar */}
+        <header className="flex justify-between items-center py-4 px-6 bg-black text-white">
+          <div className="flex items-center">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none lg:hidden transition-transform duration-300 ease-in-out transform hover:scale-110">
+              <Menu className="h-6 w-6" />
             </button>
           </div>
-        </div>
-      </nav>
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 p-2 rounded-md hover:bg-green-800 transition-colors"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </header>
 
-      {/* Sidebar and Content */}
-      <div className="flex pt-16">
-        {/* Sidebar */}
-        <div 
-          className={`fixed inset-y-0 left-0 transform ${
-            isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-          } w-64 bg-black transition-transform duration-300 ease-in-out z-30 pt-16`}
-        >
-          <div className="flex flex-col space-y-2 mt-4">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setIsMenuOpen(false);
-                }}
-                className={`flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors ${
-                  activeTab === item.id ? 'bg-green-800' : ''
-                }`}
-              >
-                {item.icon}
-                <span>{item.name}</span>
-              </button>
-            ))}
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors mt-4"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Overlay */}
-        {isMenuOpen && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-20"
-            onClick={() => setIsMenuOpen(false)}
-          ></div>
-        )}
-
-        {/* Main Content */}
-        <div className="flex-1 ml-0 md:ml-64 p-8 mt-0">
-          <div className="max-w-7xl mx-auto">
+        {/* Main content area */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+          <div className="container mx-auto px-6 py-8 animate-fade-in">
             {renderContent()}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

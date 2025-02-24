@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Search, Plus } from 'lucide-react';
 import { Button } from '../common/button';
 import { useNavigate } from 'react-router-dom';
+import { useStudents } from '../../contexts/StudentContext';
 
 const EnrolledStudents = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  // Use our context instead of hardcoded data
+  const { students, updateStudentClass } = useStudents();
 
   const classOptions = [
     'Nursery',
@@ -16,34 +19,6 @@ const EnrolledStudents = () => {
     'Year 4',
     'Year 5',
     'Year 6'
-  ];
-
-  // Example data - replace with actual data
-  const students = [
-    {
-      id: 1,
-      name: 'John Doe',
-      dob: '2018-05-15',
-      address: '123 School Lane, City',
-      medicalHistory: 'No allergies',
-      parentName: 'Jane Doe',
-      phoneNumber: '07700 900123',
-      emergencyContactName: 'Bob Doe',
-      emergencyContactNumber: '07700 900124',
-      className: 'Year 1'
-    },
-    {
-      id: 2,
-      name: 'Sarah Smith',
-      dob: '2017-08-22',
-      address: '456 Education Road, Town',
-      medicalHistory: 'Asthma',
-      parentName: 'Mike Smith',
-      phoneNumber: '07700 900125',
-      emergencyContactName: 'Lisa Smith',
-      emergencyContactNumber: '07700 900126',
-      className: 'Year 2'
-    }
   ];
 
   const calculateAge = (dob) => {
@@ -64,6 +39,11 @@ const EnrolledStudents = () => {
 
   const handleAddStudent = () => {
     navigate('/admin-dashboard/add-student');
+  };
+
+  // Handle class change using our context function
+  const handleClassChange = (studentId, newClassName) => {
+    updateStudentClass(studentId, newClassName);
   };
 
   return (
@@ -127,8 +107,7 @@ const EnrolledStudents = () => {
                     className="border rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-green-500"
                     value={student.className}
                     onChange={(e) => {
-                      // Handle class change
-                      console.log(`Changed class for ${student.name} to ${e.target.value}`);
+                      handleClassChange(student.id, e.target.value);
                     }}
                   >
                     {classOptions.map((className) => (

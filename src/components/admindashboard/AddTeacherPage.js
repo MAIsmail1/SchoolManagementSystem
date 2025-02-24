@@ -178,12 +178,12 @@ const AddTeacherPage = ({ logout }) => {
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
               <button
-                onClick={handleGoBack}
-                className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                <span className="text-xl font-semibold">Add Teacher</span>
-              </button>
+                              onClick={() => navigate('/admin-dashboard')}
+                              className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
+                            >
+                              <ArrowLeft className="h-5 w-5" />
+                              <span className="text-xl font-semibold">Back</span>
+                            </button>
             </div>
             <button
               onClick={() => {

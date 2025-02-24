@@ -1,12 +1,17 @@
-// src/components/dashboard/WaitingListStudents.jsx
+// src/components/adminDashboard/WaitingListStudents.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, UserPlus } from 'lucide-react';
 import { Button } from '../common/button';
+import { useStudents } from '../../contexts/StudentContext';
 
 const WaitingListStudents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  
+  // Use our context to access waiting list students and functions
+  const { waitingListStudents, enrollWaitingListStudent, updateWaitingListStudentStatus } = useStudents();
+
   const handleAddStudent = () => {
     navigate('/admin-dashboard/waiting/add-student');
   };
@@ -17,33 +22,6 @@ const WaitingListStudents = () => {
     'Documents Required',
     'Interview Scheduled',
     'Waitlisted'
-  ];
-
-  const waitingStudents = [
-    {
-      id: 1,
-      name: 'Emma Wilson',
-      dob: '2019-03-10',
-      address: '789 Learning Ave, City',
-      medicalHistory: 'None',
-      parentName: 'David Wilson',
-      phoneNumber: '07700 900127',
-      emergencyContactName: 'Mary Wilson',
-      emergencyContactNumber: '07700 900128',
-      status: 'Pending'
-    },
-    {
-      id: 2,
-      name: 'James Brown',
-      dob: '2018-11-25',
-      address: '321 Study Street, Town',
-      medicalHistory: 'Peanut allergy',
-      parentName: 'Susan Brown',
-      phoneNumber: '07700 900129',
-      emergencyContactName: 'Tom Brown',
-      emergencyContactNumber: '07700 900130',
-      status: 'Documents Required'
-    }
   ];
 
   const calculateAge = (dob) => {
@@ -57,9 +35,9 @@ const WaitingListStudents = () => {
     return age;
   };
 
-  const filteredStudents = waitingStudents.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.parentName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = waitingListStudents.filter(student =>
+    student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.parentName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status) => {
@@ -71,6 +49,17 @@ const WaitingListStudents = () => {
       'Waitlisted': 'bg-gray-100 text-gray-800'
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
+  const handleStatusChange = (studentId, newStatus) => {
+    updateWaitingListStudentStatus(studentId, newStatus);
+  };
+
+  const handleEnrollStudent = (studentId) => {
+    if (confirm('Are you sure you want to enroll this student?')) {
+      enrollWaitingListStudent(studentId);
+      alert('Student has been enrolled successfully!');
+    }
   };
 
   return (
@@ -100,55 +89,69 @@ const WaitingListStudents = () => {
         />
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB (Age)</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medical History</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Contact</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Number</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredStudents.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {new Date(student.dob).toLocaleDateString()} ({calculateAge(student.dob)} years)
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.address}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.medicalHistory}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.parentName}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.phoneNumber}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactName}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactNumber}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <select
-                    className={`rounded-md px-2 py-1 text-sm font-medium ${getStatusColor(student.status)} border-0 focus:outline-none focus:ring-2 focus:ring-green-500`}
-                    value={student.status}
-                    onChange={(e) => {
-                      console.log(`Changed status for ${student.name} to ${e.target.value}`);
-                    }}
-                  >
-                    {statusOptions.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </td>
+      {filteredStudents.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          No waiting list students found. Add a new student to the waiting list.
+        </div>
+      ) : (
+        /* Table */
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB (Age)</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medical History</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Contact</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredStudents.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {new Date(student.dob).toLocaleDateString()} ({calculateAge(student.dob)} years)
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.address}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.medicalHistory}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.parentName}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.phoneNumber}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactName}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactNumber}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <select
+                      className={`rounded-md px-2 py-1 text-sm font-medium ${getStatusColor(student.status)} border-0 focus:outline-none focus:ring-2 focus:ring-green-500`}
+                      value={student.status}
+                      onChange={(e) => handleStatusChange(student.id, e.target.value)}
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <Button
+                      onClick={() => handleEnrollStudent(student.id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded-md flex items-center"
+                    >
+                      <UserPlus className="w-3 h-3 mr-1" />
+                      Enroll
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

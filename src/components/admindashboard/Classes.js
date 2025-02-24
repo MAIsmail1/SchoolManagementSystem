@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { Plus, Users, Clock } from 'lucide-react';
 import { Button } from '../common/button';
 import { Card } from '../common/card';
+import { useNavigate } from 'react-router-dom';
 
 const Classes = () => {
   const [activeView, setActiveView] = useState('list'); // 'list' or 'schedule'
-
+  const navigate = useNavigate();
   const classes = [
     {
       id: 1,
@@ -110,7 +111,7 @@ const Classes = () => {
       </table>
     </div>
   );
-
+ 
   return (
     <div className="animate-fade-in">
       <div className="flex justify-between items-center mb-6">
@@ -139,12 +140,12 @@ const Classes = () => {
             </button>
           </div>
           <Button 
-            onClick={() => console.log('Add new class')}
-            className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Class
-          </Button>
+        onClick={() => navigate('/admin-dashboard/classes/add')}
+        className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2"
+      >
+        <Plus className="w-4 h-4" />
+        Add Class
+      </Button>
         </div>
       </div>
 

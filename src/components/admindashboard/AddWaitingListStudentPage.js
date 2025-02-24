@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowLeft, Save, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
 import { Button } from '../common/button';
 import { useAuth } from '../../contexts/AuthContext';
+import { useStudents } from '../../contexts/StudentContext'; // Import our custom hook
 
 const AddWaitingListStudentPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('waiting');
-  const handleGoBack = () => {
-    navigate(-1);
-  };
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { addWaitingListStudent } = useStudents(); // Use our context
+
   const [studentData, setStudentData] = useState({
     name: '',
     dob: '',
@@ -69,11 +69,12 @@ const AddWaitingListStudentPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement actual waiting list student addition logic (e.g., API call)
-    console.log('Waiting List Student Data Submitted:', studentData);
     
-    // Temporary alert to show data
-    alert(JSON.stringify(studentData, null, 2));
+    // Add the waiting list student using our context function
+    const newStudentId = addWaitingListStudent(studentData);
+    
+    // Show success message
+    alert(`Student ${studentData.name} has been added to the waiting list successfully!`);
     
     // Navigate back to waiting list in admin dashboard
     navigate('/admin-dashboard/waiting');
@@ -98,11 +99,11 @@ const AddWaitingListStudentPage = () => {
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
               <button
-                onClick={handleGoBack}
+                onClick={() => navigate('/admin-dashboard')}
                 className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
               >
                 <ArrowLeft className="h-5 w-5" />
-                <span className="text-xl font-semibold">Add Waiting List Student</span>
+                <span className="text-xl font-semibold">Back</span>
               </button>
             </div>
             <button
