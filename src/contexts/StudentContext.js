@@ -1,69 +1,69 @@
 import React, { createContext, useState, useContext } from 'react';
 
-// Initial students data
+// Initial students data - Now adjusted for masjid/Islamic classes
 const initialStudents = [
   {
     id: 1,
-    name: 'John Doe',
+    name: 'Ahmad Khan',
     dob: '2018-05-15',
-    address: '123 School Lane, City',
+    address: '123 Main Street, City',
     medicalHistory: 'No allergies',
-    parentName: 'Jane Doe',
+    parentName: 'Yusuf Khan',
     phoneNumber: '07700 900123',
-    emergencyContactName: 'Bob Doe',
+    emergencyContactName: 'Sarah Khan',
     emergencyContactNumber: '07700 900124',
-    className: 'Year 1'
+    className: 'Quran Level 1'
   },
   {
     id: 2,
-    name: 'Sarah Smith',
+    name: 'Fatima Ali',
     dob: '2017-08-22',
-    address: '456 Education Road, Town',
+    address: '456 Mosque Road, Town',
     medicalHistory: 'Asthma',
-    parentName: 'Mike Smith',
+    parentName: 'Ibrahim Ali',
     phoneNumber: '07700 900125',
-    emergencyContactName: 'Lisa Smith',
+    emergencyContactName: 'Aisha Ali',
     emergencyContactNumber: '07700 900126',
-    className: 'Year 2'
+    className: 'Islamic Studies'
   }
 ];
 
-// Initial waiting list data
+// Initial waiting list data - Adjusted for masjid context
 const initialWaitingList = [
   {
     id: 1,
-    name: 'Emma Wilson',
+    name: 'Hassan Ahmed',
     dob: '2019-03-10',
-    address: '789 Learning Ave, City',
+    address: '789 Prayer Ave, City',
     medicalHistory: 'None',
-    parentName: 'David Wilson',
+    parentName: 'Mohammed Ahmed',
     phoneNumber: '07700 900127',
-    emergencyContactName: 'Mary Wilson',
+    emergencyContactName: 'Khadija Ahmed',
     emergencyContactNumber: '07700 900128',
     status: 'Pending',
     applicationDate: '2025-01-15',
-    preferredClass: 'Nursery',
+    preferredClass: 'Quran Level 1',
     notes: '',
-    siblingInSchool: false,
+    siblingInProgram: false,
     siblingName: '',
-    reasonForApplication: 'Moving to the area'
+    reasonForApplication: 'Wants to learn Quran'
   },
   {
     id: 2,
-    name: 'James Brown',
+    name: 'Zainab Hassan',
     dob: '2018-11-25',
-    address: '321 Study Street, Town',
+    address: '321 Community Street, Town',
     medicalHistory: 'Peanut allergy',
-    parentName: 'Susan Brown',
+    parentName: 'Omar Hassan',
     phoneNumber: '07700 900129',
-    emergencyContactName: 'Tom Brown',
+    emergencyContactName: 'Mariam Hassan',
     emergencyContactNumber: '07700 900130',
     status: 'Documents Required',
     applicationDate: '2025-01-20',
-    preferredClass: 'Reception',
+    preferredClass: 'Arabic Basics',
     notes: 'Needs to provide medical documentation',
-    siblingInSchool: true,
-    siblingName: 'Oliver Brown',
+    siblingInProgram: true,
+    siblingName: 'Abdullah Hassan',
     reasonForApplication: 'Sibling already enrolled'
   }
 ];
@@ -145,7 +145,7 @@ export const StudentProvider = ({ children }) => {
     ));
   };
 
-  // Delete enrolled student
+  // Delete student
   const deleteStudent = (studentId) => {
     setStudents(students.filter(student => student.id !== studentId));
   };

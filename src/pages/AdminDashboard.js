@@ -6,7 +6,7 @@ import EnrolledStudents from '../components/adminDashboard/EnrolledStudents';
 import WaitingListStudents from '../components/adminDashboard/WaitingListStudents';
 import TeacherProfiles from '../components/adminDashboard/TeacherProfiles';
 import Classes from '../components/adminDashboard/Classes';
-import Attendance from '../components/adminDashboard/AdminAttendance';
+import AdminAttendance from '../components/adminDashboard/AdminAttendance'; // Changed from Attendance to AdminAttendance
 import StudentProgress from '../components/adminDashboard/StudentProgress';
 import Payment from '../components/adminDashboard/Payment';
 
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
       case 'waiting': return <WaitingListStudents />;
       case 'teachers': return <TeacherProfiles />;
       case 'classes': return <Classes />;
-      case 'attendance': return <Attendance />;
+      case 'attendance': return <AdminAttendance />; // Changed from Attendance to AdminAttendance
       case 'progress': return <StudentProgress />;
       case 'payment': return <Payment />;
       default: return <EnrolledStudents />;
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-black transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex items-center justify-center h-16 bg-black">
-          <span className="text-white text-xl font-semibold">Admin Dashboard</span>
+          <span className="text-white text-xl font-semibold">Masjid Admin Dashboard</span>
         </div>
         <nav className="mt-5">
           {menuItems.map((item) => (

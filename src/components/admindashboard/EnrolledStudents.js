@@ -7,18 +7,20 @@ import { useStudents } from '../../contexts/StudentContext';
 const EnrolledStudents = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  // Use our context instead of hardcoded data
   const { students, updateStudentClass } = useStudents();
 
+  // Islamic education class options
   const classOptions = [
-    'Nursery',
-    'Reception',
-    'Year 1',
-    'Year 2',
-    'Year 3',
-    'Year 4',
-    'Year 5',
-    'Year 6'
+    'Quran Level 1',
+    'Quran Level 2',
+    'Quran Level 3',
+    'Hifz Program',
+    'Tajweed',
+    'Arabic Basics',
+    'Arabic Intermediate',
+    'Islamic Studies',
+    'Seerah',
+    'Fiqh'
   ];
 
   const calculateAge = (dob) => {
@@ -41,7 +43,6 @@ const EnrolledStudents = () => {
     navigate('/admin-dashboard/add-student');
   };
 
-  // Handle class change using our context function
   const handleClassChange = (studentId, newClassName) => {
     updateStudentClass(studentId, newClassName);
   };

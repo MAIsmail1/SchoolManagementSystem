@@ -1,4 +1,3 @@
-// src/components/adminDashboard/WaitingListStudents.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, UserPlus } from 'lucide-react';
@@ -105,8 +104,7 @@ const WaitingListStudents = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medical History</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preferred Class</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
@@ -122,8 +120,7 @@ const WaitingListStudents = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{student.medicalHistory}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{student.parentName}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{student.phoneNumber}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{student.emergencyContactNumber}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{student.preferredClass}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       className={`rounded-md px-2 py-1 text-sm font-medium ${getStatusColor(student.status)} border-0 focus:outline-none focus:ring-2 focus:ring-green-500`}

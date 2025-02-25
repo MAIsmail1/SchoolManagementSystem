@@ -1,7 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { StudentProvider } from './contexts/StudentContext'; // Import our StudentProvider
+import { StudentProvider } from './contexts/StudentContext';
+import { TeacherProvider } from './contexts/TeacherContext';
+import { ClassesProvider } from './contexts/ClassesContext';
+import { AttendanceProvider } from './contexts/AttendanceContext';
+import { PaymentProvider } from './contexts/PaymentContext';
+import { ProgressProvider } from './contexts/ProgressContext';
 import Navigation from './components/layout/Navigation';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -27,12 +32,6 @@ const AppContent = () => {
   // List of routes that should NOT have the Navigation component
   const routesWithoutNavigation = [
     '/admin-dashboard', 
-    '/admin-dashboard/waiting',
-    '/admin-dashboard/teachers',
-    '/admin-dashboard/classes',
-    '/admin-dashboard/attendance',
-    '/admin-dashboard/progress',
-    '/admin-dashboard/payment',
     '/teacher-dashboard',
     '/admin-dashboard/add-student',
     '/admin-dashboard/waiting/add-student',
@@ -56,33 +55,102 @@ const AppContent = () => {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/package-contact/:packageId" element={<PackageContactPage />} />
           <Route path="/login" element={<LoginPage />} />
-          
-          {/* Admin Dashboard and its sub-routes */}
-          <Route path="/admin-dashboard/*" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Routes>
-                <Route path="/" element={<AdminDashboard />} />
-                <Route path="/waiting" element={<AdminDashboard />} />
-                <Route path="/teachers" element={<AdminDashboard />} />
-                <Route path="/classes" element={<AdminDashboard />} />
-                <Route path="/attendance" element={<AdminDashboard />} />
-                <Route path="/progress" element={<AdminDashboard />} />
-                <Route path="/payment" element={<AdminDashboard />} />
-                <Route path="/add-student" element={<AddStudentPage />} />
-                <Route path="/waiting/add-student" element={<AddWaitingListStudentPage />} />
-                <Route path="/teachers/add-teacher" element={<AddTeacherPage />} />
-                <Route path="/classes/add" element={<AddClassPage />} />
-              </Routes>
-            </PrivateRoute>
-          } />
-          
-          {/* Teacher Dashboard */}
-          <Route path="/teacher-dashboard" element={
-            <PrivateRoute allowedRoles={['teacher']}>
-              <TeacherDashboard />
-            </PrivateRoute>
-          } />
-          
+          <Route
+            path="/admin-dashboard"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/waiting"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/teachers"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/classes"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/attendance"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/progress"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/payment"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/add-student"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AddStudentPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/waiting/add-student"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AddWaitingListStudentPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/teachers/add-teacher"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AddTeacherPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard/classes/add"
+            element={
+              <PrivateRoute allowedRoles={['admin']}>
+                <AddClassPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/teacher-dashboard"
+            element={
+              <PrivateRoute allowedRoles={['teacher']}>
+                <TeacherDashboard />
+              </PrivateRoute>
+            }
+          />
           {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -95,8 +163,18 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <StudentProvider> {/* Add StudentProvider here */}
-          <AppContent />
+        <StudentProvider>
+          <TeacherProvider>
+            <ClassesProvider>
+              <AttendanceProvider>
+                <PaymentProvider>
+                  <ProgressProvider>
+                    <AppContent />
+                  </ProgressProvider>
+                </PaymentProvider>
+              </AttendanceProvider>
+            </ClassesProvider>
+          </TeacherProvider>
         </StudentProvider>
       </AuthProvider>
     </Router>

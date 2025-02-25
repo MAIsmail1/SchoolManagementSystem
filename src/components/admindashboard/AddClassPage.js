@@ -1,33 +1,103 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, X, ArrowLeft, Save, BookOpen, LogOut } from 'lucide-react';
+import { Menu, X, ArrowLeft, Save, BookOpen, LogOut, Users, UserCheck, UserPlus, Calendar, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '../common/button';
+import { useAuth } from '../../contexts/AuthContext';
+import { useTeachers } from '../../contexts/TeacherContext';
+import { useClasses } from '../../contexts/ClassesContext';
 
 const AddClassPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { teachers } = useTeachers();
+  const { addClass } = useClasses();
+  
   const [classDetails, setClassDetails] = useState({
     name: '',
     teacher: '',
-    maxStudents: '',
+    maxStudents: 20,
     room: '',
-    schedule: [{ day: '', startTime: '', endTime: '' }]
+    schedule: [{ day: '', startTime: '', endTime: '' }],
+    description: '',
+    level: 'Beginner',
+    ageGroup: 'Children (7-12)',
+    gender: 'Mixed',
+    language: 'English'
   });
 
   const menuItems = [
-    { id: 'enrolled', name: 'Enrolled Students' },
-    { id: 'waiting', name: 'Waiting List' },
-    { id: 'teachers', name: 'Teacher Profiles' },
-    { id: 'classes', name: 'Classes' },
-    { id: 'attendance', name: 'Attendance' },
-    { id: 'progress', name: 'Student Progress' },
-    { id: 'payment', name: 'Payment' }
+    { id: 'enrolled', name: 'Enrolled Students', icon: <Users className="w-5 h-5" /> },
+    { id: 'waiting', name: 'Waiting List', icon: <UserCheck className="w-5 h-5" /> },
+    { id: 'teachers', name: 'Teacher Profiles', icon: <UserPlus className="w-5 h-5" /> },
+    { id: 'classes', name: 'Classes', icon: <BookOpen className="w-5 h-5" /> },
+    { id: 'attendance', name: 'Attendance', icon: <Calendar className="w-5 h-5" /> },
+    { id: 'progress', name: 'Student Progress', icon: <TrendingUp className="w-5 h-5" /> },
+    { id: 'payment', name: 'Payment', icon: <Wallet className="w-5 h-5" /> }
   ];
 
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // Expanded days to include weekends for masjid classes
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  
+  // More comprehensive time slots that include evening times for masjid classes
   const timeSlots = [
     '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM',
+    '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'
+  ];
+
+  // Class types specific to Islamic education
+  const classTypes = [
+    'Quran Recitation',
+    'Quran Memorization (Hifz)',
+    'Tajweed',
+    'Arabic Language',
+    'Islamic Studies',
+    'Fiqh',
+    'Seerah',
+    'Aqeedah'
+  ];
+
+  // Levels for Islamic education classes
+  const levelOptions = [
+    'Beginner', 
+    'Intermediate', 
+    'Advanced'
+  ];
+
+  // Age group options
+  const ageGroupOptions = [
+    'Children (7-12)',
+    'Teens (13-17)',
+    'Adults (18+)',
+    'Seniors (65+)',
+    'All Ages'
+  ];
+
+  // Gender options for classes
+  const genderOptions = [
+    'Brothers Only',
+    'Sisters Only',
+    'Mixed',
+    'Children (Mixed)'
+  ];
+
+  // Language options
+  const languageOptions = [
+    'English',
+    'Arabic',
+    'Urdu',
+    'English & Arabic'
+  ];
+
+  // Room options
+  const roomOptions = [
+    'Main Prayer Hall',
+    'Classroom A',
+    'Classroom B',
+    'Hifz Room',
+    'Conference Room',
+    'Sisters Section'
   ];
 
   const handleInputChange = (e) => {
@@ -63,10 +133,30 @@ const AddClassPage = () => {
     }));
   };
 
+  const formatScheduleForSaving = () => {
+    return classDetails.schedule.map(slot => ({
+      day: slot.day,
+      time: `${slot.startTime} - ${slot.endTime}`
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement actual class creation logic
-    console.log('Class Details:', classDetails);
+    
+    // Format the class data for saving
+    const classData = {
+      ...classDetails,
+      schedule: formatScheduleForSaving()
+    };
+    
+    // Add the class using our context function
+    const newClassId = addClass(classData);
+    
+    // Show success message
+    alert(`Class "${classDetails.name}" has been added successfully!`);
+    
+    // Navigate back to classes page
+    navigate('/admin-dashboard/classes');
   };
 
   return (
@@ -84,7 +174,7 @@ const AddClassPage = () => {
               </button>
               <button
                 onClick={() => {
-                  navigate('/admin-dashboard');
+                  navigate('/admin-dashboard/classes');
                 }}
                 className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
               >
@@ -93,7 +183,10 @@ const AddClassPage = () => {
               </button>
             </div>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => {
+                logout();
+                navigate('/');
+              }}
               className="flex items-center space-x-2 p-2 rounded-md hover:bg-green-800 transition-colors"
             >
               <LogOut className="h-5 w-5" />
@@ -115,15 +208,24 @@ const AddClassPage = () => {
               key={item.id}
               onClick={() => {
                 setIsMenuOpen(false);
-                // Navigate to respective pages if needed
                 navigate(`/admin-dashboard/${item.id === 'enrolled' ? '' : item.id}`);
               }}
               className="flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors"
             >
-              <BookOpen className="w-5 h-5" />
+              {item.icon}
               <span>{item.name}</span>
             </button>
           ))}
+          <button
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
+            className="flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors mt-4"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
@@ -145,7 +247,7 @@ const AddClassPage = () => {
           <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6 animate-fade-in">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <BookOpen className="w-6 h-6 mr-3 text-green-700" />
-              Add New Class
+              Add New Masjid Class
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -160,24 +262,131 @@ const AddClassPage = () => {
                     value={classDetails.name}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-                    placeholder="e.g., Year 4 Mathematics"
+                    placeholder="e.g., Quran Recitation Level 1"
                     required
                   />
                 </div>
-                {/* Teacher */}
+                {/* Class Type */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    Teacher
+                    Class Type
                   </label>
-                  <input
-                    type="text"
-                    name="teacher"
-                    value={classDetails.teacher}
+                  <select
+                    name="type"
+                    value={classDetails.type}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-                    placeholder="Teacher Name"
                     required
-                  />
+                  >
+                    <option value="">Select Class Type</option>
+                    {classTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Class Teacher */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Teacher
+                </label>
+                <select
+                  name="teacher"
+                  value={classDetails.teacher}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  required
+                >
+                  <option value="">Select Teacher</option>
+                  {teachers.map(teacher => (
+                    <option key={teacher.id} value={teacher.name}>{teacher.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Class Description
+                </label>
+                <textarea
+                  name="description"
+                  value={classDetails.description}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  placeholder="Describe what will be taught in this class"
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Level */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Level
+                  </label>
+                  <select
+                    name="level"
+                    value={classDetails.level}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  >
+                    {levelOptions.map(level => (
+                      <option key={level} value={level}>{level}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Age Group */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Age Group
+                  </label>
+                  <select
+                    name="ageGroup"
+                    value={classDetails.ageGroup}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  >
+                    {ageGroupOptions.map(age => (
+                      <option key={age} value={age}>{age}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Gender */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Gender
+                  </label>
+                  <select
+                    name="gender"
+                    value={classDetails.gender}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  >
+                    {genderOptions.map(option => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Language */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Language
+                  </label>
+                  <select
+                    name="language"
+                    value={classDetails.language}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+                  >
+                    {languageOptions.map(lang => (
+                      <option key={lang} value={lang}>{lang}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -203,15 +412,18 @@ const AddClassPage = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Room
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="room"
                     value={classDetails.room}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-                    placeholder="Room Number"
                     required
-                  />
+                  >
+                    <option value="">Select Room</option>
+                    {roomOptions.map(room => (
+                      <option key={room} value={room}>{room}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

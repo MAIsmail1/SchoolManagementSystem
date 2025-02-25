@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowLeft, Save, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useTeachers } from '../../contexts/TeacherContext';
 
-const AddTeacherPage = ({ logout }) => {
+const AddTeacherPage = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('teachers');
-
-  const handleGoBack = () => {
-    navigate('/admin-dashboard/teachers');
-  };
+  const { logout } = useAuth();
+  const { addTeacher } = useTeachers();
 
   const [teacherData, setTeacherData] = useState({
     // Personal Information
@@ -31,10 +31,12 @@ const AddTeacherPage = ({ logout }) => {
     experience: '',
     joiningDate: new Date().toISOString().split('T')[0],
     
-    // Bank and Payroll
-    bankName: '',
-    accountNumber: '',
-    taxIdentificationNumber: '',
+    // Islamic Qualification Details
+    hafiz: false,
+    ijazah: false,
+    tajweedCertification: false,
+    arabicFluency: 'Native',
+    islamicEducation: '',
     
     // Employment Details
     employmentType: 'Full-Time',
@@ -54,7 +56,7 @@ const AddTeacherPage = ({ logout }) => {
     // Professional Status
     status: 'Active',
     performanceRating: '',
-    departmentAssigned: ''
+    departmentAssigned: 'Quran Studies'
   });
 
   const menuItems = [
@@ -70,8 +72,8 @@ const AddTeacherPage = ({ logout }) => {
   const employmentTypes = [
     'Full-Time',
     'Part-Time',
-    'Contract',
-    'Adjunct'
+    'Volunteer',
+    'Weekend Only'
   ];
 
   const statusOptions = [
@@ -83,38 +85,65 @@ const AddTeacherPage = ({ logout }) => {
   ];
 
   const qualificationOptions = [
-    'Bachelor\'s Degree',
-    'Master\'s Degree',
-    'PhD',
-    'Teaching Certification',
-    'Subject Specialty Certification'
+    'Islamic Studies Degree',
+    'Alim/Alimah Course',
+    'Qari/Qariah Certificate',
+    'Arabic Language Degree',
+    'Teaching Certification'
+  ];
+
+  const arabicFluencyOptions = [
+    'Native',
+    'Fluent',
+    'Intermediate',
+    'Basic'
   ];
 
   const departmentOptions = [
-    'Primary Education',
-    'Secondary Education',
-    'Mathematics',
-    'Science',
-    'Languages',
-    'Arts',
-    'Physical Education'
+    'Quran Studies',
+    'Tajweed',
+    'Hifz Program',
+    'Arabic Language',
+    'Islamic Studies',
+    'Fiqh',
+    'Seerah'
+  ];
+
+  const subjectOptions = [
+    'Quran Recitation',
+    'Quran Memorization',
+    'Tajweed',
+    'Arabic Grammar',
+    'Arabic Conversation',
+    'Islamic Studies',
+    'Fiqh',
+    'Seerah',
+    'Aqeedah',
+    'Islamic History'
   ];
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (type === 'checkbox') {
-      setTeacherData(prev => {
-        const currentValues = prev[name] || [];
-        if (checked) {
-          return { ...prev, [name]: [...currentValues, value] };
-        } else {
-          return { 
-            ...prev, 
-            [name]: currentValues.filter(item => item !== value) 
-          };
-        }
-      });
+      if (name === 'qualifications' || name === 'subjectsTaught') {
+        setTeacherData(prev => {
+          const currentValues = prev[name] || [];
+          if (checked) {
+            return { ...prev, [name]: [...currentValues, value] };
+          } else {
+            return { 
+              ...prev, 
+              [name]: currentValues.filter(item => item !== value) 
+            };
+          }
+        });
+      } else {
+        setTeacherData(prev => ({
+          ...prev,
+          [name]: checked
+        }));
+      }
     } else {
       setTeacherData(prev => ({
         ...prev,
@@ -155,13 +184,12 @@ const AddTeacherPage = ({ logout }) => {
       return;
     }
 
-    console.log('Teacher Data Submitted:', {
-      ...teacherData,
-      password: '********'
-    });
+    // Add the teacher using our context function
+    addTeacher(teacherData);
     
     alert(`Teacher ${teacherData.firstName} ${teacherData.lastName} added successfully!`);
     
+    // Navigate back to teacher profiles in admin dashboard
     navigate('/admin-dashboard/teachers');
   };
 
@@ -178,12 +206,12 @@ const AddTeacherPage = ({ logout }) => {
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
               <button
-                              onClick={() => navigate('/admin-dashboard')}
-                              className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
-                            >
-                              <ArrowLeft className="h-5 w-5" />
-                              <span className="text-xl font-semibold">Back</span>
-                            </button>
+                onClick={() => navigate('/admin-dashboard')}
+                className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span className="text-xl font-semibold">Back</span>
+              </button>
             </div>
             <button
               onClick={() => {
@@ -197,6 +225,50 @@ const AddTeacherPage = ({ logout }) => {
           </div>
         </div>
       </nav>
+
+      {/* Sidebar */}
+      <div 
+        className={`fixed inset-y-0 left-0 transform ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } w-64 bg-black transition-transform duration-300 ease-in-out z-30 pt-16`}
+      >
+        <div className="flex flex-col space-y-2 mt-4">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setIsMenuOpen(false);
+                navigate(`/admin-dashboard/${item.id === 'enrolled' ? '' : item.id}`);
+              }}
+              className={`flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors ${
+                activeTab === item.id ? 'bg-green-800' : ''
+              }`}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </button>
+          ))}
+          <button
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
+            className="flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors mt-4"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20"
+          onClick={() => setIsMenuOpen(false)}
+        ></div>
+      )}
 
       <div className="flex pt-16">
         <div className="flex-1 p-8 mt-0">
@@ -307,11 +379,84 @@ const AddTeacherPage = ({ logout }) => {
                 </div>
               </div>
 
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold text-green-800 mb-4">Islamic Qualifications</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-md font-medium text-gray-700 mb-2">Certifications</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="hafiz"
+                          name="hafiz"
+                          checked={teacherData.hafiz}
+                          onChange={handleInputChange}
+                          className="mr-2"
+                        />
+                        <span>Hafiz/Hafiza (Complete Quran Memorization)</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="ijazah"
+                          name="ijazah"
+                          checked={teacherData.ijazah}
+                          onChange={handleInputChange}
+                          className="mr-2"
+                        />
+                        <span>Ijazah in Quran Recitation</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="tajweedCertification"
+                          name="tajweedCertification"
+                          checked={teacherData.tajweedCertification}
+                          onChange={handleInputChange}
+                          className="mr-2"
+                        />
+                        <span>Tajweed Certification</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Arabic Fluency</label>
+                    <select
+                      name="arabicFluency"
+                      value={teacherData.arabicFluency}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      {arabicFluencyOptions.map((level) => (
+                        <option key={level} value={level}>{level}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="islamicEducation" className="block text-sm font-medium text-gray-700 mb-2">
+                    Islamic Education Background
+                  </label>
+                  <textarea
+                    id="islamicEducation"
+                    name="islamicEducation"
+                    value={teacherData.islamicEducation}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Describe Islamic education and institutions attended"
+                    rows="3"
+                  />
+                </div>
+              </div>
+
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Professional Details</h2>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Qualifications</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">General Qualifications</label>
                     {qualificationOptions.map((qual) => (
                       <div key={qual} className="flex items-center">
                         <input
@@ -327,6 +472,24 @@ const AddTeacherPage = ({ logout }) => {
                     ))}
                   </div>
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Subjects Taught</label>
+                    {subjectOptions.map((subject) => (
+                      <div key={subject} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="subjectsTaught"
+                          value={subject}
+                          checked={teacherData.subjectsTaught.includes(subject)}
+                          onChange={handleInputChange}
+                          className="mr-2"
+                        />
+                        <span>{subject}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4 mt-4">
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
                     <select
                       name="departmentAssigned"
@@ -334,7 +497,6 @@ const AddTeacherPage = ({ logout }) => {
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                      <option value="">Select Department</option>
                       {departmentOptions.map((dept) => (
                         <option key={dept} value={dept}>{dept}</option>
                       ))}
@@ -354,8 +516,23 @@ const AddTeacherPage = ({ logout }) => {
                     </select>
                   </div>
                 </div>
+                <div className="mt-4">
+                  <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-2">
+                    Teaching Experience
+                  </label>
+                  <textarea
+                    id="experience"
+                    name="experience"
+                    value={teacherData.experience}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Describe previous teaching experience"
+                    rows="3"
+                  />
+                </div>
               </div>
 
+              {/* Submit Button */}
               <div className="flex justify-end">
                 <button 
                   type="submit"

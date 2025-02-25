@@ -1,43 +1,23 @@
-// src/components/dashboard/Classes.jsx
 import React, { useState } from 'react';
-import { Plus, Users, Clock } from 'lucide-react';
+import { Plus, Users, Clock, BookOpen } from 'lucide-react';
 import { Button } from '../common/button';
 import { Card } from '../common/card';
 import { useNavigate } from 'react-router-dom';
+import { useClasses } from '../../contexts/ClassesContext';
 
 const Classes = () => {
   const [activeView, setActiveView] = useState('list'); // 'list' or 'schedule'
   const navigate = useNavigate();
-  const classes = [
-    {
-      id: 1,
-      name: 'Year 4 Mathematics',
-      teacher: 'Mrs. Sarah Johnson',
-      students: 25,
-      schedule: [
-        { day: 'Monday', time: '9:00 AM - 10:30 AM' },
-        { day: 'Wednesday', time: '9:00 AM - 10:30 AM' },
-        { day: 'Friday', time: '9:00 AM - 10:30 AM' }
-      ],
-      room: 'Room 101'
-    },
-    {
-      id: 2,
-      name: 'Year 6 English',
-      teacher: 'Mr. David Williams',
-      students: 28,
-      schedule: [
-        { day: 'Monday', time: '11:00 AM - 12:30 PM' },
-        { day: 'Thursday', time: '11:00 AM - 12:30 PM' }
-      ],
-      room: 'Room 203'
-    }
-  ];
+  const { classes } = useClasses();
 
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // For masjid context, include weekend days
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  
+  // Update time slots for typical masjid class times (including evening slots)
   const timeSlots = [
     '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM',
+    '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'
   ];
 
   const ClassCard = ({ classInfo }) => (
@@ -49,9 +29,15 @@ const Classes = () => {
         </div>
         <span className="flex items-center text-gray-600">
           <Users className="w-4 h-4 mr-1" />
-          {classInfo.students} students
+          {classInfo.students}/{classInfo.maxStudents} students
         </span>
       </div>
+
+      {classInfo.description && (
+        <div className="mt-3 text-gray-600 text-sm">
+          {classInfo.description}
+        </div>
+      )}
 
       <div className="mt-4">
         <h4 className="font-medium text-gray-700">Schedule</h4>
@@ -94,7 +80,7 @@ const Classes = () => {
                 <td key={`${day}-${time}`} className="px-6 py-4 whitespace-nowrap border">
                   {classes.map(cls => (
                     cls.schedule.some(slot => 
-                      slot.day === day && slot.time.startsWith(time)
+                      slot.day === day && slot.time.includes(time)
                     ) && (
                       <div key={cls.id} className="p-2 bg-green-50 text-green-700 rounded-md">
                         <div className="font-medium">{cls.name}</div>
@@ -115,7 +101,10 @@ const Classes = () => {
   return (
     <div className="animate-fade-in">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Classes</h2>
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+          <BookOpen className="w-6 h-6 mr-2 text-green-700" />
+          Masjid Classes
+        </h2>
         <div className="flex gap-4">
           <div className="flex rounded-md shadow-sm" role="group">
             <button
@@ -140,12 +129,12 @@ const Classes = () => {
             </button>
           </div>
           <Button 
-        onClick={() => navigate('/admin-dashboard/classes/add')}
-        className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2"
-      >
-        <Plus className="w-4 h-4" />
-        Add Class
-      </Button>
+            onClick={() => navigate('/admin-dashboard/classes/add')}
+            className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Class
+          </Button>
         </div>
       </div>
 

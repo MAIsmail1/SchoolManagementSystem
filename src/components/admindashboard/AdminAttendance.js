@@ -1,62 +1,84 @@
-// src/components/dashboard/Attendance.jsx
-import React, { useState } from 'react';
-import { Calendar, ChevronDown, Check, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, ChevronDown, Check, X, Clock, Pencil, BookOpen } from 'lucide-react';
 import { Button } from '../common/button';
 import { Card } from '../common/card';
+import { useClasses } from '../../contexts/ClassesContext';
+import { useAttendance } from '../../contexts/AttendanceContext';
 
-const Attendance = () => {
-  const [selectedClass, setSelectedClass] = useState('Year 4');
+const AdminAttendance = () => {
+  const { classes } = useClasses();
+  const { getAttendance, updateAttendanceStatus, getAttendanceStats } = useAttendance();
+  
+  const [selectedClass, setSelectedClass] = useState(classes.length > 0 ? classes[0].name : '');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [students, setStudents] = useState([]);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [notes, setNotes] = useState('');
+  const [lateMinutes, setLateMinutes] = useState(0);
 
-  const classes = [
-    'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6'
-  ];
-
-  const students = [
-    {
-      id: 1,
-      name: 'John Doe',
-      attendance: 'present',
-      notes: '',
-      lateMinutes: 0
-    },
-    {
-      id: 2,
-      name: 'Sarah Smith',
-      attendance: 'absent',
-      notes: 'Doctor appointment',
-      lateMinutes: 0
-    },
-    {
-      id: 3,
-      name: 'James Wilson',
-      attendance: 'late',
-      notes: 'Traffic delay',
-      lateMinutes: 15
+  // Update students when selected class or date changes
+  useEffect(() => {
+    if (selectedClass) {
+      const attendanceRecords = getAttendance(selectedClass, selectedDate);
+      setStudents(attendanceRecords);
     }
-  ];
+  }, [selectedClass, selectedDate, getAttendance]);
 
-  const getAttendanceStats = () => {
-    const total = students.length;
-    const present = students.filter(s => s.attendance === 'present').length;
-    const absent = students.filter(s => s.attendance === 'absent').length;
-    const late = students.filter(s => s.attendance === 'late').length;
-
-    return {
-      total,
-      present,
-      absent,
-      late,
-      presentPercentage: ((present + late) / total * 100).toFixed(1)
-    };
+  const handleStatusChange = (studentId, status) => {
+    updateAttendanceStatus(selectedClass, selectedDate, studentId, status);
+    
+    // Update local state
+    setStudents(prevStudents => 
+      prevStudents.map(student => 
+        student.id === studentId 
+          ? { ...student, attendance: status, lateMinutes: status === 'late' ? student.lateMinutes : 0 } 
+          : student
+      )
+    );
   };
 
-  const stats = getAttendanceStats();
+  const startEditing = (student) => {
+    setEditingStudent(student);
+    setNotes(student.notes);
+    setLateMinutes(student.lateMinutes);
+  };
+
+  const saveNotes = () => {
+    if (!editingStudent) return;
+    
+    updateAttendanceStatus(
+      selectedClass, 
+      selectedDate, 
+      editingStudent.id, 
+      editingStudent.attendance, 
+      notes, 
+      parseInt(lateMinutes) || 0
+    );
+    
+    // Update local state
+    setStudents(prevStudents => 
+      prevStudents.map(student => 
+        student.id === editingStudent.id 
+          ? { ...student, notes, lateMinutes: parseInt(lateMinutes) || 0 } 
+          : student
+      )
+    );
+    
+    // Reset editing state
+    setEditingStudent(null);
+    setNotes('');
+    setLateMinutes(0);
+  };
+
+  const stats = getAttendanceStats(selectedClass, selectedDate);
 
   return (
     <div className="animate-fade-in">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Attendance</h2>
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+          <Calendar className="w-7 h-7 mr-2 text-green-700" />
+          Attendance
+        </h2>
         <div className="flex gap-4">
           <div className="relative">
             <select
@@ -65,7 +87,7 @@ const Attendance = () => {
               className="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               {classes.map((cls) => (
-                <option key={cls} value={cls}>{cls}</option>
+                <option key={cls.id} value={cls.name}>{cls.name}</option>
               ))}
             </select>
             <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2" />
@@ -100,6 +122,18 @@ const Attendance = () => {
         </Card>
       </div>
 
+      {/* Class Info */}
+      <div className="mb-6">
+        <Card className="p-4 bg-green-50">
+          <div className="flex items-center space-x-2">
+            <BookOpen className="w-5 h-5 text-green-700" />
+            <span className="text-green-700 font-semibold">
+              {selectedClass} • {selectedDate} • Attendance: {stats.presentPercentage}%
+            </span>
+          </div>
+        </Card>
+      </div>
+
       {/* Attendance Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
@@ -129,20 +163,81 @@ const Attendance = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {student.lateMinutes > 0 ? `${student.lateMinutes} mins` : '-'}
+                    {editingStudent && editingStudent.id === student.id && editingStudent.attendance === 'late' ? (
+                      <input
+                        type="number"
+                        min="0"
+                        value={lateMinutes}
+                        onChange={(e) => setLateMinutes(e.target.value)}
+                        className="w-16 px-2 py-1 border rounded"
+                      />
+                    ) : (
+                      student.lateMinutes > 0 ? `${student.lateMinutes} mins` : '-'
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {student.notes || '-'}
+                    {editingStudent && editingStudent.id === student.id ? (
+                      <input
+                        type="text"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        className="w-full px-2 py-1 border rounded"
+                        placeholder="Add notes..."
+                      />
+                    ) : (
+                      student.notes || '-'
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button className="text-green-600 hover:text-green-900">
-                        <Check className="w-5 h-5" />
-                      </button>
-                      <button className="text-red-600 hover:text-red-900">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
+                    {editingStudent && editingStudent.id === student.id ? (
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={saveNotes}
+                          className="text-green-600 hover:text-green-900"
+                          title="Save"
+                        >
+                          <Check className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => setEditingStudent(null)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Cancel"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleStatusChange(student.id, 'present')}
+                          className={`${student.attendance === 'present' ? 'text-green-800 bg-green-100 p-1 rounded' : 'text-green-600 hover:text-green-900'}`}
+                          title="Mark Present"
+                        >
+                          <Check className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleStatusChange(student.id, 'late')}
+                          className={`${student.attendance === 'late' ? 'text-yellow-800 bg-yellow-100 p-1 rounded' : 'text-yellow-600 hover:text-yellow-900'}`}
+                          title="Mark Late"
+                        >
+                          <Clock className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleStatusChange(student.id, 'absent')}
+                          className={`${student.attendance === 'absent' ? 'text-red-800 bg-red-100 p-1 rounded' : 'text-red-600 hover:text-red-900'}`}
+                          title="Mark Absent"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => startEditing(student)}
+                          className="text-blue-600 hover:text-blue-900 ml-2"
+                          title="Edit Notes"
+                        >
+                          <Pencil className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -154,4 +249,4 @@ const Attendance = () => {
   );
 };
 
-export default Attendance;
+export default AdminAttendance;

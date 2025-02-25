@@ -21,7 +21,12 @@ const AddStudentPage = () => {
     phoneNumber: '',
     emergencyContactName: '',
     emergencyContactNumber: '',
-    className: 'Nursery'
+    className: 'Quran Level 1',
+    prayerLevel: 'Beginner',
+    quranLevel: 'Beginner',
+    arabicLevel: 'None',
+    previousIslamicEducation: '',
+    attendancePreference: 'Weekday Evening'
   });
 
   const menuItems = [
@@ -35,14 +40,31 @@ const AddStudentPage = () => {
   ];
 
   const classOptions = [
-    'Nursery',
-    'Reception',
-    'Year 1',
-    'Year 2',
-    'Year 3',
-    'Year 4',
-    'Year 5',
-    'Year 6'
+    'Quran Level 1',
+    'Quran Level 2',
+    'Quran Level 3',
+    'Hifz Program',
+    'Tajweed',
+    'Arabic Basics',
+    'Arabic Intermediate',
+    'Islamic Studies',
+    'Seerah',
+    'Fiqh'
+  ];
+
+  const levelOptions = [
+    'None',
+    'Beginner',
+    'Intermediate',
+    'Advanced'
+  ];
+
+  const attendanceOptions = [
+    'Weekday Evening',
+    'Weekend Morning',
+    'Weekend Afternoon',
+    'Weekday Afternoon',
+    'Flexible'
   ];
 
   const handleInputChange = (e) => {
@@ -289,24 +311,123 @@ const AddStudentPage = () => {
                 </div>
               </div>
 
-              {/* Class Selection */}
-              <div>
-                <label htmlFor="className" className="block text-sm font-medium text-gray-700 mb-2">
-                  Class
-                </label>
-                <select
-                  id="className"
-                  name="className"
-                  value={studentData.className}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-                >
-                  {classOptions.map((className) => (
-                    <option key={className} value={className}>
-                      {className}
-                    </option>
-                  ))}
-                </select>
+              {/* Islamic Education Information */}
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h3 className="text-lg font-medium text-green-800 mb-3">Islamic Education Information</h3>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="className" className="block text-sm font-medium text-gray-700 mb-2">
+                      Class Assignment
+                    </label>
+                    <select
+                      id="className"
+                      name="className"
+                      value={studentData.className}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {classOptions.map((className) => (
+                        <option key={className} value={className}>
+                          {className}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="attendancePreference" className="block text-sm font-medium text-gray-700 mb-2">
+                      Attendance Preference
+                    </label>
+                    <select
+                      id="attendancePreference"
+                      name="attendancePreference"
+                      value={studentData.attendancePreference}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {attendanceOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <label htmlFor="quranLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                      Quran Level
+                    </label>
+                    <select
+                      id="quranLevel"
+                      name="quranLevel"
+                      value={studentData.quranLevel}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {levelOptions.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="arabicLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                      Arabic Level
+                    </label>
+                    <select
+                      id="arabicLevel"
+                      name="arabicLevel"
+                      value={studentData.arabicLevel}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {levelOptions.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="prayerLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                      Prayer Knowledge
+                    </label>
+                    <select
+                      id="prayerLevel"
+                      name="prayerLevel"
+                      value={studentData.prayerLevel}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {levelOptions.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="previousIslamicEducation" className="block text-sm font-medium text-gray-700 mb-2">
+                    Previous Islamic Education
+                  </label>
+                  <textarea
+                    id="previousIslamicEducation"
+                    name="previousIslamicEducation"
+                    value={studentData.previousIslamicEducation}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter details about previous Islamic studies, if any"
+                    rows="3"
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}

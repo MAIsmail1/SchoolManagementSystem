@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowLeft, Save, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
 import { Button } from '../common/button';
 import { useAuth } from '../../contexts/AuthContext';
-import { useStudents } from '../../contexts/StudentContext'; // Import our custom hook
+import { useStudents } from '../../contexts/StudentContext';
 
 const AddWaitingListStudentPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('waiting');
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { addWaitingListStudent } = useStudents(); // Use our context
+  const { addWaitingListStudent } = useStudents();
 
   const [studentData, setStudentData] = useState({
     name: '',
@@ -23,11 +23,14 @@ const AddWaitingListStudentPage = () => {
     emergencyContactNumber: '',
     status: 'Pending',
     applicationDate: new Date().toISOString().split('T')[0],
-    preferredClass: 'Nursery',
+    preferredClass: 'Quran Level 1',
     notes: '',
-    siblingInSchool: false,
+    siblingInProgram: false,
     siblingName: '',
-    reasonForApplication: ''
+    reasonForApplication: '',
+    quranExperience: '',
+    prayerKnowledge: '',
+    attendancePreference: 'Weekday Evening'
   });
 
   const menuItems = [
@@ -41,14 +44,16 @@ const AddWaitingListStudentPage = () => {
   ];
 
   const classOptions = [
-    'Nursery',
-    'Reception',
-    'Year 1',
-    'Year 2',
-    'Year 3',
-    'Year 4',
-    'Year 5',
-    'Year 6'
+    'Quran Level 1',
+    'Quran Level 2',
+    'Quran Level 3',
+    'Hifz Program',
+    'Tajweed',
+    'Arabic Basics',
+    'Arabic Intermediate',
+    'Islamic Studies',
+    'Seerah',
+    'Fiqh'
   ];
 
   const statusOptions = [
@@ -57,6 +62,14 @@ const AddWaitingListStudentPage = () => {
     'Documents Required',
     'Interview Scheduled',
     'Waitlisted'
+  ];
+
+  const attendanceOptions = [
+    'Weekday Evening',
+    'Weekend Morning',
+    'Weekend Afternoon',
+    'Weekday Afternoon',
+    'Flexible'
   ];
 
   const handleInputChange = (e) => {
@@ -343,24 +356,77 @@ const AddWaitingListStudentPage = () => {
                 </div>
               </div>
 
-              {/* Class Preference */}
-              <div>
-                <label htmlFor="preferredClass" className="block text-sm font-medium text-gray-700 mb-2">
-                  Preferred Class
-                </label>
-                <select
-                  id="preferredClass"
-                  name="preferredClass"
-                  value={studentData.preferredClass}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-                >
-                  {classOptions.map((className) => (
-                    <option key={className} value={className}>
-                      {className}
-                    </option>
-                  ))}
-                </select>
+              {/* Islamic Education Preferences */}
+              <div className="bg-green-50 rounded-md p-4 border border-green-200">
+                <h3 className="text-lg font-medium text-green-800 mb-3">Islamic Education Preferences</h3>
+                
+                <div>
+                  <label htmlFor="preferredClass" className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Class
+                  </label>
+                  <select
+                    id="preferredClass"
+                    name="preferredClass"
+                    value={studentData.preferredClass}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  >
+                    {classOptions.map((className) => (
+                      <option key={className} value={className}>
+                        {className}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="attendancePreference" className="block text-sm font-medium text-gray-700 mb-2">
+                    Attendance Preference
+                  </label>
+                  <select
+                    id="attendancePreference"
+                    name="attendancePreference"
+                    value={studentData.attendancePreference}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  >
+                    {attendanceOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="quranExperience" className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Quran Experience
+                  </label>
+                  <textarea
+                    id="quranExperience"
+                    name="quranExperience"
+                    value={studentData.quranExperience}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Describe current level of Quran reading, memorization, etc."
+                    rows="3"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="prayerKnowledge" className="block text-sm font-medium text-gray-700 mb-2">
+                    Prayer Knowledge
+                  </label>
+                  <textarea
+                    id="prayerKnowledge"
+                    name="prayerKnowledge"
+                    value={studentData.prayerKnowledge}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Describe understanding of prayer, wudu, etc."
+                    rows="2"
+                  />
+                </div>
               </div>
 
               {/* Siblings */}
@@ -368,18 +434,18 @@ const AddWaitingListStudentPage = () => {
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    id="siblingInSchool"
-                    name="siblingInSchool"
-                    checked={studentData.siblingInSchool}
+                    id="siblingInProgram"
+                    name="siblingInProgram"
+                    checked={studentData.siblingInProgram}
                     onChange={handleInputChange}
                     className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="siblingInSchool" className="ml-2 block text-sm text-gray-700">
-                    Student has sibling already enrolled in the school
+                  <label htmlFor="siblingInProgram" className="ml-2 block text-sm text-gray-700">
+                    Student has sibling already enrolled in the masjid program
                   </label>
                 </div>
                 
-                {studentData.siblingInSchool && (
+                {studentData.siblingInProgram && (
                   <div>
                     <label htmlFor="siblingName" className="block text-sm font-medium text-gray-700 mb-2">
                       Sibling Name
@@ -408,7 +474,7 @@ const AddWaitingListStudentPage = () => {
                   value={studentData.reasonForApplication}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-                  placeholder="Why does the student want to join our school?"
+                  placeholder="Why does the student want to join our masjid program?"
                   rows="4"
                 />
               </div>

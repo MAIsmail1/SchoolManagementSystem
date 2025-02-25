@@ -1,63 +1,50 @@
-// src/components/dashboard/TeacherProfiles.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, Mail, Phone } from 'lucide-react';
 import { Button } from '../common/button';
 import { Card } from '../common/card';
+import { useTeachers } from '../../contexts/TeacherContext';
 
 const TeacherProfiles = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddTeacher, setShowAddTeacher] = useState(false);
   const navigate = useNavigate();
+  
+  // Use our context to access teachers data
+  const { teachers, updateTeacherStatus } = useTeachers();
+  
   const handleAddTeacher = () => {
-    // Explicitly navigate to the add teacher page
     navigate('/admin-dashboard/teachers/add-teacher');
   };
-  const handleGoBack = () => {
-  navigate('/admin-dashboard/teachers');
-};
-  const teachers = [
-    {
-      id: 1,
-      name: 'Mrs. Sarah Johnson',
-      email: 'sarah.johnson@taleem.com',
-      phone: '07700 900131',
-      qualifications: 'B.Ed, PGCE',
-      subjects: ['Mathematics', 'Science'],
-      yearGroup: 'Year 4',
-      startDate: '2022-09-01',
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'Mr. David Williams',
-      email: 'david.williams@taleem.com',
-      phone: '07700 900132',
-      qualifications: 'MA Education, QTS',
-      subjects: ['English', 'History'],
-      yearGroup: 'Year 6',
-      startDate: '2021-09-01',
-      status: 'Active'
-    }
-  ];
 
   const filteredTeachers = teachers.filter(teacher =>
     teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    teacher.subjects.join(' ').toLowerCase().includes(searchTerm.toLowerCase())
+    (teacher.subjects && teacher.subjects.join(' ').toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleStatusChange = (teacherId, newStatus) => {
+    updateTeacherStatus(teacherId, newStatus);
+  };
 
   const TeacherCard = ({ teacher }) => (
     <Card className="p-6 hover:shadow-lg transition-all duration-300">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-xl font-semibold text-gray-800">{teacher.name}</h3>
-          <p className="text-gray-600">{teacher.yearGroup} Teacher</p>
+          <p className="text-gray-600">{teacher.department} Teacher</p>
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm ${
-          teacher.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-        }`}>
-          {teacher.status}
-        </span>
+        <select
+          value={teacher.status}
+          onChange={(e) => handleStatusChange(teacher.id, e.target.value)}
+          className={`px-3 py-1 rounded-full text-sm ${
+            teacher.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          }`}
+        >
+          <option value="Active">Active</option>
+          <option value="On Leave">On Leave</option>
+          <option value="Probation">Probation</option>
+          <option value="Suspended">Suspended</option>
+          <option value="Resigned">Resigned</option>
+        </select>
       </div>
 
       <div className="mt-4 space-y-2">
@@ -67,19 +54,19 @@ const TeacherProfiles = () => {
         </div>
         <div className="flex items-center text-gray-600">
           <Phone className="w-4 h-4 mr-2" />
-          <span>{teacher.phone}</span>
+          <span>{teacher.phoneNumber}</span>
         </div>
       </div>
 
       <div className="mt-4">
         <h4 className="font-medium text-gray-700">Qualifications</h4>
-        <p className="text-gray-600">{teacher.qualifications}</p>
+        <p className="text-gray-600">{Array.isArray(teacher.qualifications) ? teacher.qualifications.join(', ') : teacher.qualifications}</p>
       </div>
 
       <div className="mt-4">
         <h4 className="font-medium text-gray-700">Subjects</h4>
         <div className="flex flex-wrap gap-2 mt-1">
-          {teacher.subjects.map((subject, index) => (
+          {teacher.subjects && teacher.subjects.map((subject, index) => (
             <span 
               key={index}
               className="px-2 py-1 bg-green-50 text-green-700 rounded-md text-sm"
@@ -93,13 +80,17 @@ const TeacherProfiles = () => {
       <div className="mt-4 text-sm text-gray-500">
         Started {new Date(teacher.startDate).toLocaleDateString()}
       </div>
+      
+      <div className="mt-4 text-sm text-gray-500">
+        Employment: {teacher.employmentType}
+      </div>
     </Card>
   );
 
   return (
     <div className="animate-fade-in">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Teacher Profiles</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Teachers & Instructors</h2>
         <Button 
           onClick={handleAddTeacher}
           className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2"
@@ -129,12 +120,6 @@ const TeacherProfiles = () => {
           <TeacherCard key={teacher.id} teacher={teacher} />
         ))}
       </div>
-
-      {/* Add Teacher Modal would go here */}
-      {showAddTeacher && (
-        // Modal implementation
-        <div>Add Teacher Modal</div>
-      )}
     </div>
   );
 };
