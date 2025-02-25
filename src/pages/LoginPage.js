@@ -22,6 +22,8 @@ const LoginPage = () => {
         navigate('/admin-dashboard');
       } else if (user.role === 'teacher') {
         navigate('/teacher-dashboard');
+      } else if (user.role === 'parent') {
+        navigate('/parent-dashboard');
       }
     }
   }, [isAuthenticated, navigate]);
@@ -39,6 +41,8 @@ const LoginPage = () => {
         navigate('/admin-dashboard');
       } else if (user.role === 'teacher') {
         navigate('/teacher-dashboard');
+      } else if (user.role === 'parent') {
+        navigate('/parent-dashboard');
       }
     } catch (error) {
       setError('Invalid credentials. Please try again.');
@@ -94,6 +98,17 @@ const LoginPage = () => {
                     />
                     <span className="ml-2 text-sm">Teacher</span>
                   </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="loginType"
+                      value="parent"
+                      checked={loginType === 'parent'}
+                      onChange={() => setLoginType('parent')}
+                    />
+                    <span className="ml-2 text-sm">Parent</span>
+                  </label>
                 </div>
 
                 <div className="space-y-1">
@@ -110,7 +125,11 @@ const LoginPage = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="block w-full pl-8 sm:pl-10 p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-                      placeholder={loginType === 'admin' ? 'admin@taleem.com' : 'teacher@demo.com'}
+                      placeholder={
+                        loginType === 'admin' ? 'admin@taleem.com' : 
+                        loginType === 'teacher' ? 'teacher@demo.com' : 
+                        'parent@demo.com'
+                      }
                       required
                     />
                   </div>
@@ -151,6 +170,7 @@ const LoginPage = () => {
                     <div>Demo Credentials:</div>
                     <div className="font-medium">Admin: admin@taleem.com / admin123</div>
                     <div className="font-medium">Teacher: teacher@demo.com / teacher123</div>
+                    <div className="font-medium">Parent: parent@demo.com / parent123</div>
                   </div>
                 </div>
               </form>

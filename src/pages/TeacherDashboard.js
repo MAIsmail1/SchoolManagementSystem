@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Menu, X, Calendar, Book, FileText, TrendingUp, MessageCircle, LogOut } from 'lucide-react';
+import { Menu, Calendar, Book, FileText, TrendingUp, MessageCircle, LogOut, BookOpen, Plus} from 'lucide-react';
 import TeacherAttendance from '../components/teacherDashboard/TeacherAttendance';
 import TeacherDiary from '../components/teacherDashboard/TeacherDiary';
 import TeacherExam from '../components/teacherDashboard/TeacherExam';
@@ -16,10 +16,10 @@ const TeacherDashboard = () => {
 
   const menuItems = [
     { id: 'attendance', name: 'Attendance', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'diary', name: 'Diary', icon: <Book className="w-5 h-5" /> },
-    { id: 'exam', name: 'Exam', icon: <FileText className="w-5 h-5" /> },
-    { id: 'progress', name: 'Progress', icon: <TrendingUp className="w-5 h-5" /> },
-    { id: 'communication', name: 'Communication', icon: <MessageCircle className="w-5 h-5" /> },
+    { id: 'diary', name: 'Lesson Diary', icon: <Book className="w-5 h-5" /> },
+    { id: 'exam', name: 'Quran Assessments', icon: <FileText className="w-5 h-5" /> },
+    { id: 'progress', name: 'Student Progress', icon: <TrendingUp className="w-5 h-5" /> },
+    { id: 'communication', name: 'Parent Communication', icon: <MessageCircle className="w-5 h-5" /> },
   ];
 
   const renderContent = () => {
@@ -43,8 +43,10 @@ const TeacherDashboard = () => {
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-black transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex items-center justify-center h-16 bg-black">
-          <span className="text-white text-xl font-semibold">Teacher Dashboard</span>
+          <BookOpen className="w-6 h-6 text-green-500 mr-2" />
+          <span className="text-white text-xl font-semibold">Masjid Teacher Dashboard</span>
         </div>
+        
         <nav className="mt-5">
           {menuItems.map((item) => (
             <a
@@ -69,7 +71,9 @@ const TeacherDashboard = () => {
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none lg:hidden transition-transform duration-300 ease-in-out transform hover:scale-110">
               <Menu className="h-6 w-6" />
             </button>
-            
+            <div className="ml-4 hidden md:block">
+              <span className="text-gray-300">Masjid Education Program</span>
+            </div>
           </div>
           <button
             onClick={handleLogout}

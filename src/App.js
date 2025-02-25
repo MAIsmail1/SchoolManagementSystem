@@ -20,6 +20,7 @@ import AddStudentPage from './components/adminDashboard/AddStudentPage';
 import AddWaitingListStudentPage from './components/adminDashboard/AddWaitingListStudentPage.js';
 import AddTeacherPage from './components/adminDashboard/AddTeacherPage';
 import TeacherDashboard from './pages/TeacherDashboard';
+import ParentDashboard from './pages/ParentDashboard';
 import AddClassPage from './components/adminDashboard/AddClassPage';
 import PrivateRoute from './routes/PrivateRoute';
 import { useAuth } from './contexts/AuthContext';
@@ -33,6 +34,7 @@ const AppContent = () => {
   const routesWithoutNavigation = [
     '/admin-dashboard', 
     '/teacher-dashboard',
+    '/parent-dashboard',
     '/admin-dashboard/add-student',
     '/admin-dashboard/waiting/add-student',
     '/admin-dashboard/teachers/add-teacher',
@@ -148,6 +150,14 @@ const AppContent = () => {
             element={
               <PrivateRoute allowedRoles={['teacher']}>
                 <TeacherDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/parent-dashboard"
+            element={
+              <PrivateRoute allowedRoles={['parent']}>
+                <ParentDashboard />
               </PrivateRoute>
             }
           />

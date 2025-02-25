@@ -70,7 +70,7 @@ const HomePage = () => {
             className="text-4xl font-bold mb-4 text-white opacity-0 animate-fade-in"
             style={{ animationDelay: '0.2s', animationDuration: '0.3s' }}
           >
-            Taleem: Transforming Education Management
+            Ta'leem: Transforming Education Management
           </h1>
           <p 
             className="text-xl text-gray-300 mb-8 opacity-0 animate-fade-in"
