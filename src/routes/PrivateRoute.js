@@ -1,13 +1,21 @@
+// src/routes/PrivateRoute.js
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const PrivateRoute = ({ children, allowedRoles = ['admin'] }) => {
-  const { isAuthenticated, getCurrentUser } = useAuth();
-  const user = getCurrentUser();
+const PrivateRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
+  const location = useLocation();
 
-  if (!isAuthenticated() || !allowedRoles.includes(user?.role)) {
-    return <Navigate to="/login" />;
+  // Not authenticated
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Check role-based access
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // Redirect to unauthorized page or home
+    return <Navigate to="/" replace />;
   }
 
   return children;

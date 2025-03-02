@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/common/c
 import { Button } from '../components/common/button';
 import { GraduationCap, User, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import Navigation from '../components/layout/Navigation'; // Import the Navigation component
+import Navigation from '../components/layout/Navigation';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,17 +13,29 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [loginType, setLoginType] = useState('admin');
+  const [loginType, setLoginType] = useState('super_admin');
 
   useEffect(() => {
     if (isAuthenticated()) {
       const user = JSON.parse(localStorage.getItem('user'));
-      if (user.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else if (user.role === 'teacher') {
-        navigate('/teacher-dashboard');
-      } else if (user.role === 'parent') {
-        navigate('/parent-dashboard');
+      switch(user.role) {
+        case 'super_admin':
+          navigate('/super-admin/dashboard');
+          break;
+        case 'masjid_admin':
+          navigate(`/masjid/${user.masjid}/dashboard`);
+          break;
+        case 'teacher':
+          navigate(`/masjid/${user.masjid}/teacher-dashboard`);
+          break;
+        case 'parent':
+          navigate(`/masjid/${user.masjid}/parent-dashboard`);
+          break;
+        case 'admin': // Keeping existing admin route
+          navigate('/admin-dashboard');
+          break;
+        default:
+          navigate('/');
       }
     }
   }, [isAuthenticated, navigate]);
@@ -37,16 +49,44 @@ const LoginPage = () => {
 
     try {
       const user = await login(email, password, loginType);
-      if (user.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else if (user.role === 'teacher') {
-        navigate('/teacher-dashboard');
-      } else if (user.role === 'parent') {
-        navigate('/parent-dashboard');
+      
+      // Mapping login types to navigation
+      switch(user.role) {
+        case 'super_admin':
+          navigate('/super-admin/dashboard');
+          break;
+        case 'masjid_admin':
+          navigate(`/masjid/${user.masjid}/dashboard`);
+          break;
+        case 'teacher':
+          navigate(`/masjid/${user.masjid}/teacher-dashboard`);
+          break;
+        case 'parent':
+          navigate(`/masjid/${user.masjid}/parent-dashboard`);
+          break;
+        case 'admin': // Keeping existing admin route
+          navigate('/admin-dashboard');
+          break;
+        default:
+          navigate('/');
       }
     } catch (error) {
       setError('Invalid credentials. Please try again.');
       setLoading(false);
+    }
+  };
+
+  // Determine placeholder based on login type
+  const getEmailPlaceholder = () => {
+    switch(loginType) {
+      case 'super_admin':
+        return 'admin@taleem.com';
+      case 'teacher':
+        return 'teacher@demo.com';
+      case 'parent':
+        return 'parent@demo.com';
+      default:
+        return 'Enter your email';
     }
   };
 
@@ -81,11 +121,11 @@ const LoginPage = () => {
                       type="radio"
                       className="form-radio"
                       name="loginType"
-                      value="admin"
-                      checked={loginType === 'admin'}
-                      onChange={() => setLoginType('admin')}
+                      value="super_admin"
+                      checked={loginType === 'super_admin'}
+                      onChange={() => setLoginType('super_admin')}
                     />
-                    <span className="ml-2 text-sm">Admin</span>
+                    <span className="ml-2 text-sm">Super Admin</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -125,11 +165,7 @@ const LoginPage = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="block w-full pl-8 sm:pl-10 p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-                      placeholder={
-                        loginType === 'admin' ? 'admin@taleem.com' : 
-                        loginType === 'teacher' ? 'teacher@demo.com' : 
-                        'parent@demo.com'
-                      }
+                      placeholder={getEmailPlaceholder()}
                       required
                     />
                   </div>
@@ -168,7 +204,7 @@ const LoginPage = () => {
                 <div className="mt-4 text-center">
                   <div className="text-xs sm:text-sm text-gray-600 space-y-1">
                     <div>Demo Credentials:</div>
-                    <div className="font-medium">Admin: admin@taleem.com / admin123</div>
+                    <div className="font-medium">Super Admin: admin@taleem.com / admin123</div>
                     <div className="font-medium">Teacher: teacher@demo.com / teacher123</div>
                     <div className="font-medium">Parent: parent@demo.com / parent123</div>
                   </div>

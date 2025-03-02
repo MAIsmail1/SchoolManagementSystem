@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Menu, X, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
+import { Menu, X, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut, Building } from 'lucide-react';
 import EnrolledStudents from '../components/adminDashboard/EnrolledStudents';
 import WaitingListStudents from '../components/adminDashboard/WaitingListStudents';
 import TeacherProfiles from '../components/adminDashboard/TeacherProfiles';
@@ -91,6 +91,20 @@ const AdminDashboard = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
+        <Link
+  to="/admin-dashboard/masjids"
+  className="p-4 bg-white shadow rounded-lg hover:shadow-md transition-shadow"
+>
+  <div className="flex items-center space-x-3">
+    <div className="p-2 bg-green-100 rounded-full">
+      <Building className="h-6 w-6 text-green-600" />
+    </div>
+    <div>
+      <h3 className="font-medium">Manage Masjids</h3>
+      <p className="text-sm text-gray-500">Create and customize masjid portals</p>
+    </div>
+  </div>
+</Link>
         <header className="flex justify-between items-center py-4 px-6 bg-black text-white">
           <div className="flex items-center">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none lg:hidden transition-transform duration-300 ease-in-out transform hover:scale-110">

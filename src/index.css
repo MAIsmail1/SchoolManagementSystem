@@ -26,3 +26,13 @@
     --radius: 0.5rem;
   }
 }
+/* src/index.css or src/App.css */
+body {
+  padding-top: 64px; /* Adjust this value to match the height of your navigation bar */
+  margin: 0;
+}
+
+/* Optional: Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
