@@ -9,19 +9,21 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const login = async (email, password, role) => {
-    // Existing demo login logic
-    if (role === 'admin' && email === 'admin@taleem.com' && password === 'admin123') {
-      const adminUser = { 
-        email, 
-        role: 'super_admin', 
+  const login = async (email, password, loginType) => {
+    // Super admin login
+    if (loginType === 'super_admin' && email === 'admin@taleem.com' && password === 'admin123') {
+      const adminUser = {
+        email,
+        role: 'super_admin', // This matches what LoginPage expects
         name: 'Admin User',
         masjid: null // Super admin doesn't belong to a specific masjid
       };
       setUser(adminUser);
       localStorage.setItem('user', JSON.stringify(adminUser));
       return adminUser;
-    } else if (role === 'teacher' && email === 'teacher@demo.com' && password === 'teacher123') {
+    } 
+    // Teacher login
+    else if (loginType === 'teacher' && email === 'teacher@demo.com' && password === 'teacher123') {
       const teacherUser = {
         email,
         role: 'teacher',
@@ -32,7 +34,9 @@ export const AuthProvider = ({ children }) => {
       setUser(teacherUser);
       localStorage.setItem('user', JSON.stringify(teacherUser));
       return teacherUser;
-    } else if (role === 'parent' && email === 'parent@demo.com' && password === 'parent123') {
+    } 
+    // Parent login
+    else if (loginType === 'parent' && email === 'parent@demo.com' && password === 'parent123') {
       const parentUser = {
         email,
         role: 'parent',
@@ -46,6 +50,18 @@ export const AuthProvider = ({ children }) => {
       setUser(parentUser);
       localStorage.setItem('user', JSON.stringify(parentUser));
       return parentUser;
+    }
+    // Masjid admin login (adding this for masjid administrators)
+    else if (loginType === 'masjid_admin' && email === 'masjid_admin@demo.com' && password === 'admin123') {
+      const masjidAdminUser = {
+        email,
+        role: 'masjid_admin',
+        name: 'Masjid Administrator',
+        masjid: 'demo-masjid-id' // The masjid they administer
+      };
+      setUser(masjidAdminUser);
+      localStorage.setItem('user', JSON.stringify(masjidAdminUser));
+      return masjidAdminUser;
     }
 
     throw new Error('Invalid credentials');

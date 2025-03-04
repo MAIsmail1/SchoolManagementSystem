@@ -18,12 +18,12 @@ import PackageContactPage from './pages/PackageContactPage.js';
 import ContactPage from './pages/ContactPage';
 
 // Super Admin Pages
-import SuperAdminDashboard from './pages/super-admin/DashboardPage';
+import SuperAdminDashboard from './pages/super-admin/SuperAdminDashboard';
 import ManageMasjidsPage from './pages/super-admin/ManageMasjidsPage';
 import UserManagementPage from './pages/super-admin/UserManagementPage';
 
 // Masjid Admin Pages
-import MasjidAdminDashboard from './pages/masjid-admin/DashboardPage';
+import MasjidAdminDashboard from './pages/masjid-admin/MasjidAdminDashboard';
 import MasjidDetailsPage from './pages/masjid-admin/MasjidDetailsPage';
 
 // Existing Admin Pages
@@ -97,6 +97,24 @@ const AppContent = () => {
             element={
               <PrivateRoute allowedRoles={['super_admin']}>
                 <UserManagementPage />
+              </PrivateRoute>
+            } 
+          />
+
+          {/* Masjid Admin Routes */}
+          <Route 
+            path="/masjid-admin/dashboard" 
+            element={
+              <PrivateRoute allowedRoles={['masjid_admin']}>
+                <MasjidAdminDashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/masjid-admin/masjid-details" 
+            element={
+              <PrivateRoute allowedRoles={['masjid_admin']}>
+                <MasjidDetailsPage />
               </PrivateRoute>
             } 
           />

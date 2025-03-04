@@ -12,14 +12,17 @@ import { useMasjid } from '../../contexts/MasjidContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const ManageMasjidsPage = () => {
-  const { 
-    masjids, 
-    getAllMasjids, 
-    addMasjid, 
-    updateMasjid, 
-    deleteMasjid 
-  } = useMasjid();
   const { user } = useAuth();
+  
+  // Safely access the masjid context
+  const masjidContext = useMasjid() || {};
+  const { 
+    masjids = {}, // Provide default empty object
+    getAllMasjids = async () => console.warn("getAllMasjids not available"), 
+    addMasjid = async () => console.warn("addMasjid not available"), 
+    updateMasjid = async () => console.warn("updateMasjid not available"), 
+    deleteMasjid = async () => console.warn("deleteMasjid not available")
+  } = masjidContext;
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -52,7 +55,7 @@ const ManageMasjidsPage = () => {
     };
 
     fetchMasjids();
-  }, []);
+  }, [getAllMasjids]);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -143,6 +146,9 @@ const ManageMasjidsPage = () => {
     }
   };
 
+  // Safely handle masjids data
+  const masjidsList = masjids ? Object.values(masjids) : [];
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -157,43 +163,49 @@ const ManageMasjidsPage = () => {
 
       {/* Masjids Grid */}
       <div className="grid md:grid-cols-3 gap-6">
-        {Object.values(masjids).map((masjid) => (
-          <Card 
-            key={masjid.id} 
-            className="hover:shadow-lg transition-all duration-300"
-          >
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>{masjid.name}</CardTitle>
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => openEditModal(masjid)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteMasjid(masjid.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
+        {masjidsList.length > 0 ? (
+          masjidsList.map((masjid) => (
+            <Card 
+              key={masjid.id} 
+              className="hover:shadow-lg transition-all duration-300"
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>{masjid.name}</CardTitle>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openEditModal(masjid)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteMasjid(masjid.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-2">
-                {masjid.address?.street}, {masjid.address?.city}
-              </p>
-              <div className="flex items-center text-sm text-gray-500">
-                <Users className="mr-2 h-4 w-4" />
-                Administrators: {masjid.administrators?.length || 0}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-2">
+                  {masjid.address?.street}, {masjid.address?.city}
+                </p>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Users className="mr-2 h-4 w-4" />
+                  Administrators: {masjid.administrators?.length || 0}
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="col-span-3 text-center py-12 bg-gray-50 rounded-lg">
+            <p className="text-gray-500">No masjids found. Click 'Add New Masjid' to create one.</p>
+          </div>
+        )}
       </div>
 
       {/* Create Masjid Modal */}

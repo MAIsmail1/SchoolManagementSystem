@@ -45,6 +45,65 @@ export const MasjidProvider = ({ children }) => {
     }
   };
 
+  // New method to update a masjid
+  const updateMasjid = async (masjidId, masjidData) => {
+    try {
+      setLoading(true);
+      
+      // Update the local masjids state
+      setMasjids(prev => ({
+        ...prev,
+        [masjidId]: {
+          ...prev[masjidId],
+          ...masjidData,
+          updatedAt: new Date().toISOString()
+        }
+      }));
+      
+      // If this is the current masjid, update current masjid state
+      if (currentMasjid && currentMasjid.id === masjidId) {
+        setCurrentMasjid(prev => ({
+          ...prev,
+          ...masjidData,
+          updatedAt: new Date().toISOString()
+        }));
+      }
+      
+      setLoading(false);
+      return true;
+    } catch (error) {
+      console.error("Error updating masjid:", error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  // New method to delete a masjid
+  const deleteMasjid = async (masjidId) => {
+    try {
+      setLoading(true);
+      
+      // Remove from local state
+      setMasjids(prev => {
+        const updatedMasjids = {...prev};
+        delete updatedMasjids[masjidId];
+        return updatedMasjids;
+      });
+      
+      // If this is the current masjid, clear current masjid state
+      if (currentMasjid && currentMasjid.id === masjidId) {
+        setCurrentMasjid(null);
+      }
+      
+      setLoading(false);
+      return true;
+    } catch (error) {
+      console.error("Error deleting masjid:", error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
   // New method to add masjid administrator
   const addMasjidAdmin = async (masjidId, adminData) => {
     try {

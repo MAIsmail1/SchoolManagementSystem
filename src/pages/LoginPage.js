@@ -45,10 +45,10 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
     try {
+      // Use loginType parameter to pass to the login function
       const user = await login(email, password, loginType);
+      console.log("Logged in user:", user); // Debug log
       
       // Mapping login types to navigation
       switch(user.role) {
@@ -71,6 +71,7 @@ const LoginPage = () => {
           navigate('/');
       }
     } catch (error) {
+      console.error("Login error:", error); // Debug log
       setError('Invalid credentials. Please try again.');
       setLoading(false);
     }
@@ -81,6 +82,8 @@ const LoginPage = () => {
     switch(loginType) {
       case 'super_admin':
         return 'admin@taleem.com';
+      case 'masjid_admin':
+        return 'masjid_admin@demo.com';
       case 'teacher':
         return 'teacher@demo.com';
       case 'parent':
@@ -115,7 +118,7 @@ const LoginPage = () => {
                   </div>
                 )}
                 
-                <div className="mb-4 flex justify-center space-x-4">
+                <div className="mb-4 flex flex-wrap justify-center gap-3">
                   <label className="inline-flex items-center">
                     <input
                       type="radio"
@@ -126,6 +129,17 @@ const LoginPage = () => {
                       onChange={() => setLoginType('super_admin')}
                     />
                     <span className="ml-2 text-sm">Super Admin</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="loginType"
+                      value="masjid_admin"
+                      checked={loginType === 'masjid_admin'}
+                      onChange={() => setLoginType('masjid_admin')}
+                    />
+                    <span className="ml-2 text-sm">Masjid Admin</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -205,6 +219,7 @@ const LoginPage = () => {
                   <div className="text-xs sm:text-sm text-gray-600 space-y-1">
                     <div>Demo Credentials:</div>
                     <div className="font-medium">Super Admin: admin@taleem.com / admin123</div>
+                    <div className="font-medium">Masjid Admin: masjid_admin@demo.com / admin123</div>
                     <div className="font-medium">Teacher: teacher@demo.com / teacher123</div>
                     <div className="font-medium">Parent: parent@demo.com / parent123</div>
                   </div>
