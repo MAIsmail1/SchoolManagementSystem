@@ -1,0 +1,516 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Menu, X, ArrowLeft, Save, Users, UserCheck, UserPlus, BookOpen, Calendar, TrendingUp, Wallet, LogOut } from 'lucide-react';
+import { Button } from '../common/button';
+import { useAuth } from '../../contexts/AuthContext';
+import { useStudents } from '../../contexts/StudentContext';
+
+const AddWaitingListStudentPage = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('waiting');
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { addWaitingListStudent } = useStudents();
+
+  const [studentData, setStudentData] = useState({
+    name: '',
+    dob: '',
+    address: '',
+    medicalHistory: '',
+    parentName: '',
+    phoneNumber: '',
+    emergencyContactName: '',
+    emergencyContactNumber: '',
+    status: 'Pending',
+    applicationDate: new Date().toISOString().split('T')[0],
+    preferredClass: 'Quran Level 1',
+    notes: '',
+    siblingInProgram: false,
+    siblingName: '',
+    reasonForApplication: '',
+    quranExperience: '',
+    prayerKnowledge: '',
+    attendancePreference: 'Weekday Evening'
+  });
+
+  const menuItems = [
+    { id: 'enrolled', name: 'Enrolled Students', icon: <Users className="w-5 h-5" /> },
+    { id: 'waiting', name: 'Waiting List', icon: <UserCheck className="w-5 h-5" /> },
+    { id: 'teachers', name: 'Teacher Profiles', icon: <UserPlus className="w-5 h-5" /> },
+    { id: 'classes', name: 'Classes', icon: <BookOpen className="w-5 h-5" /> },
+    { id: 'attendance', name: 'Attendance', icon: <Calendar className="w-5 h-5" /> },
+    { id: 'progress', name: 'Student Progress', icon: <TrendingUp className="w-5 h-5" /> },
+    { id: 'payment', name: 'Payment', icon: <Wallet className="w-5 h-5" /> }
+  ];
+
+  const classOptions = [
+    'Quran Level 1',
+    'Quran Level 2',
+    'Quran Level 3',
+    'Hifz Program',
+    'Tajweed',
+    'Arabic Basics',
+    'Arabic Intermediate',
+    'Islamic Studies',
+    'Seerah',
+    'Fiqh'
+  ];
+
+  const statusOptions = [
+    'Pending',
+    'In Review',
+    'Documents Required',
+    'Interview Scheduled',
+    'Waitlisted'
+  ];
+
+  const attendanceOptions = [
+    'Weekday Evening',
+    'Weekend Morning',
+    'Weekend Afternoon',
+    'Weekday Afternoon',
+    'Flexible'
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setStudentData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Add the waiting list student using our context function
+    const newStudentId = addWaitingListStudent(studentData);
+    
+    // Show success message
+    alert(`Student ${studentData.name} has been added to the waiting list successfully!`);
+    
+    // Navigate back to waiting list in admin dashboard
+    navigate('/admin-dashboard/waiting');
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Simplified Top Navigation */}
+      <nav className="bg-black text-white shadow-md fixed top-0 left-0 right-0 z-40">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-md hover:bg-green-800 transition-colors"
+              >
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+              <button
+                onClick={() => navigate('/admin-dashboard')}
+                className="ml-4 flex items-center space-x-2 hover:bg-green-800 p-2 rounded-md transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span className="text-xl font-semibold">Back</span>
+              </button>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 p-2 rounded-md hover:bg-green-800 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Sidebar */}
+      <div 
+        className={`fixed inset-y-0 left-0 transform ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } w-64 bg-black transition-transform duration-300 ease-in-out z-30 pt-16`}
+      >
+        <div className="flex flex-col space-y-2 mt-4">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setIsMenuOpen(false);
+                navigate(`/admin-dashboard/${item.id === 'enrolled' ? '' : item.id}`);
+              }}
+              className={`flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors ${
+                activeTab === item.id ? 'bg-green-800' : ''
+              }`}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </button>
+          ))}
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 px-4 py-3 text-white hover:bg-green-800 transition-colors mt-4"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20"
+          onClick={() => setIsMenuOpen(false)}
+        ></div>
+      )}
+
+      {/* Main Content */}
+      <div className="flex pt-16">
+        {/* Sidebar Spacer */}
+        <div className="hidden md:block w-64"></div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 p-8 mt-0">
+          <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6 animate-fade-in">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Application Status */}
+              <div className="bg-yellow-50 rounded-md p-4 border border-yellow-200">
+                <h3 className="text-lg font-medium text-yellow-800 mb-3">Application Status</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Status
+                    </label>
+                    <select
+                      id="status"
+                      name="status"
+                      value={studentData.status}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="applicationDate" className="block text-sm font-medium text-gray-700 mb-2">
+                      Application Date
+                    </label>
+                    <input
+                      type="date"
+                      id="applicationDate"
+                      name="applicationDate"
+                      required
+                      value={studentData.applicationDate}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Information Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={studentData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter student's full name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="dob" className="block text-sm font-medium text-gray-700 mb-2">
+                    Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    id="dob"
+                    name="dob"
+                    required
+                    value={studentData.dob}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  required
+                  value={studentData.address}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  placeholder="Enter student's full address"
+                />
+              </div>
+
+              {/* Medical History */}
+              <div>
+                <label htmlFor="medicalHistory" className="block text-sm font-medium text-gray-700 mb-2">
+                  Medical History
+                </label>
+                <textarea
+                  id="medicalHistory"
+                  name="medicalHistory"
+                  value={studentData.medicalHistory}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  placeholder="Enter any relevant medical information"
+                  rows="3"
+                />
+              </div>
+
+              {/* Parent Information */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="parentName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Parent/Guardian Name
+                  </label>
+                  <input
+                    type="text"
+                    id="parentName"
+                    name="parentName"
+                    required
+                    value={studentData.parentName}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter parent/guardian name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    required
+                    value={studentData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter contact number"
+                  />
+                </div>
+              </div>
+
+              {/* Emergency Contact */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Emergency Contact Name
+                  </label>
+                  <input
+                    type="text"
+                    id="emergencyContactName"
+                    name="emergencyContactName"
+                    required
+                    value={studentData.emergencyContactName}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter emergency contact name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="emergencyContactNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                    Emergency Contact Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="emergencyContactNumber"
+                    name="emergencyContactNumber"
+                    required
+                    value={studentData.emergencyContactNumber}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Enter emergency contact number"
+                  />
+                </div>
+              </div>
+
+              {/* Islamic Education Preferences */}
+              <div className="bg-green-50 rounded-md p-4 border border-green-200">
+                <h3 className="text-lg font-medium text-green-800 mb-3">Islamic Education Preferences</h3>
+                
+                <div>
+                  <label htmlFor="preferredClass" className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Class
+                  </label>
+                  <select
+                    id="preferredClass"
+                    name="preferredClass"
+                    value={studentData.preferredClass}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  >
+                    {classOptions.map((className) => (
+                      <option key={className} value={className}>
+                        {className}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="attendancePreference" className="block text-sm font-medium text-gray-700 mb-2">
+                    Attendance Preference
+                  </label>
+                  <select
+                    id="attendancePreference"
+                    name="attendancePreference"
+                    value={studentData.attendancePreference}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  >
+                    {attendanceOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="quranExperience" className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Quran Experience
+                  </label>
+                  <textarea
+                    id="quranExperience"
+                    name="quranExperience"
+                    value={studentData.quranExperience}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Describe current level of Quran reading, memorization, etc."
+                    rows="3"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label htmlFor="prayerKnowledge" className="block text-sm font-medium text-gray-700 mb-2">
+                    Prayer Knowledge
+                  </label>
+                  <textarea
+                    id="prayerKnowledge"
+                    name="prayerKnowledge"
+                    value={studentData.prayerKnowledge}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    placeholder="Describe understanding of prayer, wudu, etc."
+                    rows="2"
+                  />
+                </div>
+              </div>
+
+              {/* Siblings */}
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="siblingInProgram"
+                    name="siblingInProgram"
+                    checked={studentData.siblingInProgram}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="siblingInProgram" className="ml-2 block text-sm text-gray-700">
+                    Student has sibling already enrolled in the masjid program
+                  </label>
+                </div>
+                
+                {studentData.siblingInProgram && (
+                  <div>
+                    <label htmlFor="siblingName" className="block text-sm font-medium text-gray-700 mb-2">
+                      Sibling Name
+                    </label>
+                    <input
+                      type="text"
+                      id="siblingName"
+                      name="siblingName"
+                      value={studentData.siblingName}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                      placeholder="Enter sibling's name"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Reason for Application */}
+              <div>
+                <label htmlFor="reasonForApplication" className="block text-sm font-medium text-gray-700 mb-2">
+                  Reason for Application
+                </label>
+                <textarea
+                  id="reasonForApplication"
+                  name="reasonForApplication"
+                  value={studentData.reasonForApplication}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  placeholder="Why does the student want to join our masjid program?"
+                  rows="4"
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Notes
+                </label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={studentData.notes}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                  placeholder="Any additional information about the application"
+                  rows="3"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end pt-4">
+                <Button 
+                  type="submit"
+                  className="bg-green-700 hover:bg-green-800 text-white flex items-center gap-2 px-6 py-3 rounded-md transition-colors"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  Add to Waiting List
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddWaitingListStudentPage;
